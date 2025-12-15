@@ -1,0 +1,95 @@
+---
+title: MCM Comic Con Birmingham
+date:
+- 2021-11-13
+- 2021-11-14
+location: NEC (Birmingham)
+cover: https://cdn.wopian.me/thumbnails/2021/3WOP2060.avif
+images:
+# Day 1
+- https://cdn.wopian.me/photos/2021/3WOP1550.avif
+- https://cdn.wopian.me/photos/2021/3WOP1554.avif
+- https://cdn.wopian.me/photos/2021/3WOP1557.avif
+- https://cdn.wopian.me/photos/2021/3WOP2020.avif
+- https://cdn.wopian.me/photos/2021/3WOP2039.avif
+- https://cdn.wopian.me/photos/2021/3WOP2041.avif
+- https://cdn.wopian.me/photos/2021/3WOP2050.avif
+- https://cdn.wopian.me/photos/2021/3WOP2051.avif
+- https://cdn.wopian.me/photos/2021/3WOP2058.avif
+- https://cdn.wopian.me/photos/2021/3WOP2060.avif
+- https://cdn.wopian.me/photos/2021/3WOP2065.avif
+- https://cdn.wopian.me/photos/2021/3WOP2070.avif
+- https://cdn.wopian.me/photos/2021/3WOP2071.avif
+- https://cdn.wopian.me/photos/2021/3WOP2073.avif
+- https://cdn.wopian.me/photos/2021/3WOP2078.avif
+- https://cdn.wopian.me/photos/2021/3WOP2089 1.avif
+- https://cdn.wopian.me/photos/2021/3WOP2089.avif
+- https://cdn.wopian.me/photos/2021/3WOP2100.avif
+- https://cdn.wopian.me/photos/2021/3WOP2291.avif
+- https://cdn.wopian.me/photos/2021/3WOP2299.avif
+- https://cdn.wopian.me/photos/2021/3WOP2316.avif
+- https://cdn.wopian.me/photos/2021/3WOP2318.avif
+- https://cdn.wopian.me/photos/2021/3WOP2319.avif
+- https://cdn.wopian.me/photos/2021/3WOP2322.avif
+- https://cdn.wopian.me/photos/2021/3WOP2340.avif
+- https://cdn.wopian.me/photos/2021/3WOP2341.avif
+- https://cdn.wopian.me/photos/2021/3WOP2405.avif
+- https://cdn.wopian.me/photos/2021/3WOP2408.avif
+- https://cdn.wopian.me/photos/2021/3WOP2414.avif
+- https://cdn.wopian.me/photos/2021/3WOP2417.avif
+- https://cdn.wopian.me/photos/2021/3WOP2423.avif
+- https://cdn.wopian.me/photos/2021/3WOP2426.avif
+- https://cdn.wopian.me/photos/2021/3WOP2438.avif
+- https://cdn.wopian.me/photos/2021/3WOP2563.avif
+# Day 2
+- https://cdn.wopian.me/photos/2021/3WOP2735.avif
+- https://cdn.wopian.me/photos/2021/3WOP2736.avif
+- https://cdn.wopian.me/photos/2021/3WOP2737.avif
+- https://cdn.wopian.me/photos/2021/3WOP2738.avif
+- https://cdn.wopian.me/photos/2021/3WOP2740.avif
+- https://cdn.wopian.me/photos/2021/3WOP2745.avif
+- https://cdn.wopian.me/photos/2021/3WOP2747.avif
+- https://cdn.wopian.me/photos/2021/3WOP2756.avif
+- https://cdn.wopian.me/photos/2021/3WOP2758.avif
+- https://cdn.wopian.me/photos/2021/3WOP2763.avif
+- https://cdn.wopian.me/photos/2021/3WOP2767.avif
+- https://cdn.wopian.me/photos/2021/3WOP2836.avif
+- https://cdn.wopian.me/photos/2021/3WOP2839.avif
+- https://cdn.wopian.me/photos/2021/3WOP2841.avif
+- https://cdn.wopian.me/photos/2021/3WOP2904.avif
+- https://cdn.wopian.me/photos/2021/3WOP2905.avif
+- https://cdn.wopian.me/photos/2021/3WOP2907.avif
+- https://cdn.wopian.me/photos/2021/3WOP2922.avif
+- https://cdn.wopian.me/photos/2021/3WOP2923.avif
+- https://cdn.wopian.me/photos/2021/3WOP2929.avif
+- https://cdn.wopian.me/photos/2021/3WOP2938.avif
+- https://cdn.wopian.me/photos/2021/3WOP2939.avif
+- https://cdn.wopian.me/photos/2021/3WOP3098.avif
+- https://cdn.wopian.me/photos/2021/3WOP3102.avif
+- https://cdn.wopian.me/photos/2021/3WOP3106.avif
+- https://cdn.wopian.me/photos/2021/3WOP3111.avif
+- https://cdn.wopian.me/photos/2021/3WOP3113.avif
+- https://cdn.wopian.me/photos/2021/3WOP3123.avif
+- https://cdn.wopian.me/photos/2021/3WOP3128.avif
+- https://cdn.wopian.me/photos/2021/3WOP3130.avif
+- https://cdn.wopian.me/photos/2021/3WOP3138.avif
+- https://cdn.wopian.me/photos/2021/3WOP3144.avif
+- https://cdn.wopian.me/photos/2021/3WOP3149.avif
+- https://cdn.wopian.me/photos/2021/3WOP3155.avif
+- https://cdn.wopian.me/photos/2021/3WOP3160.avif
+- https://cdn.wopian.me/photos/2021/3WOP3167.avif
+- https://cdn.wopian.me/photos/2021/3WOP3170.avif
+- https://cdn.wopian.me/photos/2021/3WOP3273.avif
+- https://cdn.wopian.me/photos/2021/3WOP3274.avif
+- https://cdn.wopian.me/photos/2021/3WOP3281.avif
+- https://cdn.wopian.me/photos/2021/3WOP3283.avif
+- https://cdn.wopian.me/photos/2021/3WOP3285.avif
+- https://cdn.wopian.me/photos/2021/3WOP3290.avif
+- https://cdn.wopian.me/photos/2021/3WOP3295.avif
+- https://cdn.wopian.me/photos/2021/3WOP3426 1.avif
+- https://cdn.wopian.me/photos/2021/3WOP3426.avif
+- https://cdn.wopian.me/photos/2021/3WOP3431 1.avif
+- https://cdn.wopian.me/photos/2021/3WOP3431.avif
+- https://cdn.wopian.me/photos/2021/3WOP3436.avif
+- https://cdn.wopian.me/photos/2021/3WOP3438.avif
+---
