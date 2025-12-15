@@ -9,13 +9,13 @@ RUN apk add --no-cache python3 make g++ bash
 COPY bun.lock package.json ./
 
 # Install dependencies (cached unless lockfile changes)
-RUN bun install --frozen-lockfile
+RUN bun install --frozen-lockfile --ignore-scripts
 
 # Copy the rest of the source code
 COPY . .
 
 # Build the Nuxt app
-RUN bun run build
+RUN bun --bun run build
 
 # Stage 2: Production Image
 FROM oven/bun:1.3-alpine AS base
@@ -32,4 +32,4 @@ COPY bun.lock package.json ./
 
 USER bun
 EXPOSE 4000
-ENTRYPOINT ["sh", "-c", "bun run .output/server/index.mjs"]
+ENTRYPOINT ["sh", "-c", "bun --bun run .output/server/index.mjs"]
