@@ -28,6 +28,7 @@ const { data } = await useAsyncData<LatestItem[]>(`latest-${type}`, async () => 
       .all()
     return concerts
       .sort(sortByDateDesc)
+      .filter(item => (item.images || []).length > 1)
       .slice(0, 3)
   } else if (type === 'cosplay') {
     const cosplays = await queryCollection(type)
@@ -35,6 +36,7 @@ const { data } = await useAsyncData<LatestItem[]>(`latest-${type}`, async () => 
       .all()
     return cosplays
       .sort(sortByDateDesc)
+      .filter(item => (item.images || []).length > 1)
       .slice(0, 3)
   } else if (type === 'other') {
     const others = await queryCollection(type)
@@ -42,6 +44,7 @@ const { data } = await useAsyncData<LatestItem[]>(`latest-${type}`, async () => 
       .all()
     return others
       .sort(sortByDateDesc)
+      .filter(item => (item.images || []).length > 1)
       .slice(0, 3)
   } else if (type === 'motorsport') {
     const motorsports = await queryCollection(type)
@@ -49,6 +52,7 @@ const { data } = await useAsyncData<LatestItem[]>(`latest-${type}`, async () => 
       .all()
     return motorsports
       .sort(sortByDateDesc)
+      .filter(item => (item.images || []).length > 1)
       .slice(0, 3)
   } else {
     return [] as LatestItem[]
@@ -75,5 +79,10 @@ const { data } = await useAsyncData<LatestItem[]>(`latest-${type}`, async () => 
       />
     </div>
 
-    <p v-else class="text-gray-500">No albums found</p>
+    <UEmpty
+      v-else
+      title="No albums found"
+      description="There are no recent albums to display."
+      icon="i-lucide-image-off"
+    />
 </template>

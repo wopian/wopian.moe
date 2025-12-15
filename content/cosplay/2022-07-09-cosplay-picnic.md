@@ -2,7 +2,58 @@
 title: Cosplay Picnic
 date: 2022-07-09
 location: Reading
-cover:
+cover: https://cdn.wopian.me/thumbnails/2022/3WOP4963.avif
 images:
-  -
+- https://cdn.wopian.me/photos/2022/3WOP4932.avif
+- https://cdn.wopian.me/photos/2022/3WOP4933.avif
+- https://cdn.wopian.me/photos/2022/3WOP4935.avif
+- https://cdn.wopian.me/photos/2022/3WOP4936.avif
+- https://cdn.wopian.me/photos/2022/3WOP4939.avif
+- https://cdn.wopian.me/photos/2022/3WOP4940.avif
+- https://cdn.wopian.me/photos/2022/3WOP4944.avif
+- https://cdn.wopian.me/photos/2022/3WOP4946.avif
+- https://cdn.wopian.me/photos/2022/3WOP4949.avif
+- https://cdn.wopian.me/photos/2022/3WOP4954.avif
+- https://cdn.wopian.me/photos/2022/3WOP4955.avif
+- https://cdn.wopian.me/photos/2022/3WOP4959.avif
+- https://cdn.wopian.me/photos/2022/3WOP4961.avif
+- https://cdn.wopian.me/photos/2022/3WOP4963.avif
+- https://cdn.wopian.me/photos/2022/3WOP4964.avif
+- https://cdn.wopian.me/photos/2022/3WOP4965.avif
+- https://cdn.wopian.me/photos/2022/3WOP4975.avif
+- https://cdn.wopian.me/photos/2022/3WOP4976.avif
+- https://cdn.wopian.me/photos/2022/3WOP4977.avif
+- https://cdn.wopian.me/photos/2022/3WOP4981.avif
+- https://cdn.wopian.me/photos/2022/3WOP4982.avif
+- https://cdn.wopian.me/photos/2022/3WOP4986 1.avif
+- https://cdn.wopian.me/photos/2022/3WOP4986.avif
+- https://cdn.wopian.me/photos/2022/3WOP4991.avif
+- https://cdn.wopian.me/photos/2022/3WOP4992.avif
+- https://cdn.wopian.me/photos/2022/3WOP4995.avif
+- https://cdn.wopian.me/photos/2022/3WOP4996.avif
+- https://cdn.wopian.me/photos/2022/3WOP4998.avif
+- https://cdn.wopian.me/photos/2022/3WOP4999.avif
+- https://cdn.wopian.me/photos/2022/3WOP5001.avif
+- https://cdn.wopian.me/photos/2022/3WOP5002.avif
+- https://cdn.wopian.me/photos/2022/3WOP5004 1.avif
+- https://cdn.wopian.me/photos/2022/3WOP5004.avif
+- https://cdn.wopian.me/photos/2022/3WOP5005.avif
+- https://cdn.wopian.me/photos/2022/3WOP5011.avif
+- https://cdn.wopian.me/photos/2022/3WOP5017.avif
+- https://cdn.wopian.me/photos/2022/3WOP5025.avif
+- https://cdn.wopian.me/photos/2022/3WOP5029.avif
+- https://cdn.wopian.me/photos/2022/3WOP5033.avif
+- https://cdn.wopian.me/photos/2022/3WOP5038 1.avif
+- https://cdn.wopian.me/photos/2022/3WOP5038.avif
+- https://cdn.wopian.me/photos/2022/3WOP5041 1.avif
+- https://cdn.wopian.me/photos/2022/3WOP5041.avif
+- https://cdn.wopian.me/photos/2022/3WOP5044 1.avif
+- https://cdn.wopian.me/photos/2022/3WOP5044.avif
+- https://cdn.wopian.me/photos/2022/3WOP5050.avif
+- https://cdn.wopian.me/photos/2022/3WOP5056.avif
+- https://cdn.wopian.me/photos/2022/3WOP5061.avif
+- https://cdn.wopian.me/photos/2022/3WOP5063.avif
+- https://cdn.wopian.me/photos/2022/3WOP5070.avif
+- https://cdn.wopian.me/photos/2022/3WOP5073.avif
+- https://cdn.wopian.me/photos/2022/3WOP5076.avif
 ---

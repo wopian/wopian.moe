@@ -1,8 +1,78 @@
 ---
-title: WACK in the UK Vol.4 (MONSTER IDOL, ASP, ExWHYZ)
+title: WACK in the UK Vol.4 (MONSTERIDOL, ASP, ExWHYZ)
 date: 2024-11-27
 location: The Underworld (London)
-cover:
+cover: https://cdn.wopian.me/thumbnails/2024/DSCF6442.avif
 images:
-  -
+- https://cdn.wopian.me/photos/2024/DSCF5963.avif
+- https://cdn.wopian.me/photos/2024/DSCF5969.avif
+- https://cdn.wopian.me/photos/2024/DSCF5985.avif
+- https://cdn.wopian.me/photos/2024/DSCF5990.avif
+- https://cdn.wopian.me/photos/2024/DSCF6022.avif
+- https://cdn.wopian.me/photos/2024/DSCF6030.avif
+- https://cdn.wopian.me/photos/2024/DSCF6058.avif
+- https://cdn.wopian.me/photos/2024/DSCF6074.avif
+- https://cdn.wopian.me/photos/2024/DSCF6081.avif
+- https://cdn.wopian.me/photos/2024/DSCF6085.avif
+- https://cdn.wopian.me/photos/2024/DSCF6103.avif
+- https://cdn.wopian.me/photos/2024/DSCF6105.avif
+- https://cdn.wopian.me/photos/2024/DSCF6107.avif
+- https://cdn.wopian.me/photos/2024/DSCF6115.avif
+- https://cdn.wopian.me/photos/2024/DSCF6129.avif
+- https://cdn.wopian.me/photos/2024/DSCF6129_1.avif
+- https://cdn.wopian.me/photos/2024/DSCF6130.avif
+- https://cdn.wopian.me/photos/2024/DSCF6131.avif
+- https://cdn.wopian.me/photos/2024/DSCF6157.avif
+- https://cdn.wopian.me/photos/2024/DSCF6160.avif
+- https://cdn.wopian.me/photos/2024/DSCF6169.avif
+- https://cdn.wopian.me/photos/2024/DSCF6170.avif
+- https://cdn.wopian.me/photos/2024/DSCF6178.avif
+- https://cdn.wopian.me/photos/2024/DSCF6191.avif
+- https://cdn.wopian.me/photos/2024/DSCF6204.avif
+- https://cdn.wopian.me/photos/2024/DSCF6226.avif
+- https://cdn.wopian.me/photos/2024/DSCF6241.avif
+- https://cdn.wopian.me/photos/2024/DSCF6245.avif
+- https://cdn.wopian.me/photos/2024/DSCF6269.avif
+- https://cdn.wopian.me/photos/2024/DSCF6275.avif
+- https://cdn.wopian.me/photos/2024/DSCF6278.avif
+- https://cdn.wopian.me/photos/2024/DSCF6283.avif
+- https://cdn.wopian.me/photos/2024/DSCF6284.avif
+- https://cdn.wopian.me/photos/2024/DSCF6286.avif
+- https://cdn.wopian.me/photos/2024/DSCF6299.avif
+- https://cdn.wopian.me/photos/2024/DSCF6303.avif
+- https://cdn.wopian.me/photos/2024/DSCF6309.avif
+- https://cdn.wopian.me/photos/2024/DSCF6318.avif
+- https://cdn.wopian.me/photos/2024/DSCF6319.avif
+- https://cdn.wopian.me/photos/2024/DSCF6320.avif
+- https://cdn.wopian.me/photos/2024/DSCF6338.avif
+- https://cdn.wopian.me/photos/2024/DSCF6339.avif
+- https://cdn.wopian.me/photos/2024/DSCF6345.avif
+- https://cdn.wopian.me/photos/2024/DSCF6382.avif
+- https://cdn.wopian.me/photos/2024/DSCF6397.avif
+- https://cdn.wopian.me/photos/2024/DSCF6442.avif
+- https://cdn.wopian.me/photos/2024/DSCF6461.avif
+- https://cdn.wopian.me/photos/2024/DSCF6471.avif
+- https://cdn.wopian.me/photos/2024/DSCF6490.avif
+- https://cdn.wopian.me/photos/2024/DSCF6525.avif
+- https://cdn.wopian.me/photos/2024/DSCF6545.avif
+- https://cdn.wopian.me/photos/2024/DSCF6570.avif
+- https://cdn.wopian.me/photos/2024/DSCF6631.avif
+- https://cdn.wopian.me/photos/2024/DSCF6663.avif
+- https://cdn.wopian.me/photos/2024/DSCF6679.avif
+- https://cdn.wopian.me/photos/2024/DSCF6691.avif
+- https://cdn.wopian.me/photos/2024/DSCF6715-2.avif
+- https://cdn.wopian.me/photos/2024/DSCF6718-2.avif
+- https://cdn.wopian.me/photos/2024/DSCF6722.avif
+- https://cdn.wopian.me/photos/2024/DSCF6723-2.avif
+- https://cdn.wopian.me/photos/2024/DSCF6726.avif
+- https://cdn.wopian.me/photos/2024/DSCF6801.avif
+- https://cdn.wopian.me/photos/2024/DSCF6804.avif
+- https://cdn.wopian.me/photos/2024/DSCF6806.avif
+- https://cdn.wopian.me/photos/2024/DSCF6811.avif
+- https://cdn.wopian.me/photos/2024/DSCF6830.avif
+- https://cdn.wopian.me/photos/2024/DSCF6834.avif
+- https://cdn.wopian.me/photos/2024/DSCF6837.avif
+- https://cdn.wopian.me/photos/2024/DSCF6843.avif
+- https://cdn.wopian.me/photos/2024/DSCF6852.avif
+- https://cdn.wopian.me/photos/2024/DSCF6853.avif
 ---
