@@ -9,7 +9,7 @@ RUN apk add --no-cache python3 make g++ bash
 COPY bun.lock package.json ./
 
 # Install dependencies (cached unless lockfile changes)
-RUN bun install --frozen-lockfile --ignore-scripts
+RUN bun install --frozen-lockfile # --ignore-scripts
 
 # Copy the rest of the source code
 COPY . .
