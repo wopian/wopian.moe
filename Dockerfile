@@ -15,7 +15,7 @@ RUN bun install --frozen-lockfile --ignore-scripts
 COPY . .
 
 # Build the Nuxt app
-RUN bun --bun run build
+RUN bun run build
 
 # Stage 2: Production Image
 FROM oven/bun:1.3-alpine AS base
@@ -28,8 +28,8 @@ COPY --from=builder /app/.output ./.output
 COPY bun.lock package.json ./
 
 # Install only production dependencies
-# RUN bun install --frozen-lockfile --production
+RUN bun install --frozen-lockfile --ignore-scripts --production
 
 USER bun
 EXPOSE 4000
-ENTRYPOINT ["sh", "-c", "bun --bun run .output/server/index.mjs"]
+ENTRYPOINT ["bun", "--bun", ".output/server/index.mjs"]
