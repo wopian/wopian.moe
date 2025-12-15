@@ -16,7 +16,6 @@
     "@nuxt/ui": "4.2.1",
     "@nuxtjs/tailwindcss": "7.0.0-beta.0",
     "@tabler/icons-vue": "^3.35.0",
-    "better-sqlite3": "^12.5.0",
     "nuxt": "^4.2.2"
   }
 }
