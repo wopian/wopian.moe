@@ -19,7 +19,7 @@ COPY . .
 RUN bun run build
 
 #Compile to Bun single binary
-RUN bun build --compile --target=bun-linux-x64-musl .output/server/index.mjs --outfile ./server-binary
+RUN bun build .output/server/index.mjs --compile --outfile ./server-binary
 
 # Stage 2: Production Image
 FROM oven/bun:1.3-alpine AS base
