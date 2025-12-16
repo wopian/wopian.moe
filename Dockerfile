@@ -1,41 +1,20 @@
-# Stage 1: Dependencies and Build
-FROM oven/bun:1.3-alpine AS builder
+# Stage 1: Build app
+FROM oven/bun:1.3-slim as build
 WORKDIR /app
 
-# Install system dependencies for node-gyp and native modules
-RUN apk add --no-cache python3 make g++ bash
+COPY package.json bun.lock ./
 
-# Copy only lockfile and manifest first to cache deps
-COPY bun.lock package.json ./
+RUN bun install --frozen-lockfile --ignore-scripts
 
-# Install dependencies (cached unless lockfile changes)
-RUN bun install --frozen-lockfile
-# --ignore-scripts
-
-# Copy the rest of the source code
 COPY . .
 
-# Build the Nuxt app
-RUN bun run build
+RUN bun --bun run build
 
-#Compile to Bun single binary
-RUN bun build .output/server/index.mjs --compile --outfile ./server-binary
-
-# Stage 2: Production Image
-FROM oven/bun:1.3-alpine AS base
+# Stage 2: Production image
+FROM oven/bun:1.3-slim as production
 WORKDIR /app
 
-# Copy built output only
-# COPY --from=builder /app/.output ./.output
-COPY --from=builder /app/server-binary ./server-binary
+COPY --from=build /app/.output /app
 
-# Copy only what's needed for runtime (if necessary)
-#COPY bun.lock package.json ./
-
-# Install only production dependencies
-#RUN bun install --frozen-lockfile --ignore-scripts --production
-
-USER bun
-EXPOSE 4000
-#ENTRYPOINT ["bun", "--bun", ".output/server/index.mjs"]
-ENTRYPOINT ["./server-binary"]
+EXPOSE 4000/tcp
+ENTRYPOINT ["bun", "--bun", "run", "/app/server/index.mjs"]

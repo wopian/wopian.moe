@@ -4,7 +4,6 @@ export default defineNuxtConfig({
   nitro: {
     preset: 'bun',
     node: true,
-    noExternals: true,
     inlineDynamicImports: true,
     serveStatic: 'inline',
     esbuild: {
