@@ -1,5 +1,5 @@
 # Stage 1: Build app
-FROM oven/bun:1.3-slim as build
+FROM oven/bun:1.3-slim AS build
 WORKDIR /app
 
 COPY package.json bun.lock ./
@@ -11,7 +11,7 @@ COPY . .
 RUN bun --bun run build
 
 # Stage 2: Production image
-FROM oven/bun:1.3-slim as production
+FROM oven/bun:1.3-slim AS production
 WORKDIR /app
 
 COPY --from=build /app/.output /app
