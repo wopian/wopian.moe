@@ -33,6 +33,10 @@ export default defineNuxtConfig({
     // TODO: Switch to CDN
     dir: 'public'
   },
+  colorMode: {
+    preference: 'dark',
+    fallback: 'dark',
+  },
   ui: {
     theme: {
       colors: [
@@ -44,7 +48,7 @@ export default defineNuxtConfig({
         'warning',
         'error'
       ]
-    }
+    },
   },
   runtimeConfig: {
     public: {

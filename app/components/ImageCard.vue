@@ -35,8 +35,8 @@ const displayLocation = isMultipleLocations
       </div>
 
       <h2 class="text-lg font-semibold text-nowrap text-ellipsis overflow-clip">{{ title }}</h2>
-      <p class="text-sm text-gray-500 text-nowrap text-ellipsis overflow-clip" v-if="location">{{ displayLocation }}</p>
-      <div class="text-xs text-gray-500 flex justify-between mt-1">
+      <p class="text-sm text-accent-200/75 text-nowrap text-ellipsis overflow-clip" v-if="location">{{ displayLocation }}</p>
+      <div class="text-xs text-white/50 flex justify-between mt-1">
         <p>{{ dateRange }}</p>
         <p>{{ images.length }} photos</p>
       </div>

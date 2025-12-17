@@ -1,10 +1,23 @@
 <script setup lang="ts">
-  const links = ref([
+const config = useRuntimeConfig()
+const site = config.public.siteName ?? 'WOPIAN PHOTOGRAPHY'
+
+const links = ref([
+  {
+    label: 'Support me on Ko-fi',
+    to: 'https://ko-fi.com/wopian'
+  }
+])
+
+useHead({
+  title: site,
+  meta: [
     {
-      label: 'Support me on Ko-fi',
-      to: 'https://ko-fi.com/wopian'
+      name: 'description',
+      content: 'Professional concert, motorsport and cosplay photography by WOPIAN. Explore stunning photo albums and high-quality images from various events.'
     }
-  ])
+  ]
+})
 </script>
 
 <template>
@@ -14,9 +27,8 @@
     class="rounded-xl"
     :ui="{ container: 'py-12 lg:py-12' }"
     variant="soft"
-    title="Like my work?"
-    description="If you enjoy my photography and want to support my work, consider buying me a coffee
-      on Ko-fi!"
+    title="Enjoy the photos?"
+    description="Help support future shoots, travel and editing by buying me a coffee on Ko-fi. Every contribution is greatly appreciated."
   >
     <template #links>
       <UButton
@@ -25,16 +37,18 @@
         :to="link.to"
         target="_blank"
         rel="noopener"
-        class="px-6 py-3 bg-accent text-white rounded hover:bg-accent-200 transition"
+        variant="solid"
+			  color="accent"
+			  size="xl"
       >
         {{ link.label }}
       </UButton>
     </template>
   </UPageCTA>
 
-  <LatestOfType type="motorsport" title="Latest Motorsport Events" />
-
   <LatestOfType type="cosplay" title="Latest Cosplay Shoots" />
+
+  <LatestOfType type="motorsport" title="Latest Motorsport Events" />
 
   <LatestOfType type="other" title="Latest Miscellaneous Photos" />
 </template>

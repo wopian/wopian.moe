@@ -1,10 +1,12 @@
 <template>
-  <NuxtLink
+  <UButton
     :to="to"
-    class="px-6 py-1.5 bg-accent text-white rounded hover:bg-accent-200 transition"
+    variant="solid"
+    color="accent"
+    size="lg"
   >
     View All
-  </NuxtLink>
+  </UButton>
 </template>
 
 <script lang="ts" setup>

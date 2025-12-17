@@ -8,4 +8,14 @@ const { data = [] } = await useAsyncData('other', () => {
     .select('id', 'path', 'title', 'date', 'location', 'cover', 'images')
     .all()
 })
+
+useHead({
+  title: 'Miscellaneous Photography by WOPIAN',
+  meta: [
+    {
+      name: 'description',
+      content: 'Various photography works by WOPIAN that do not fit into specific categories.'
+    }
+  ]
+})
 </script>

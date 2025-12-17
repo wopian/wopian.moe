@@ -1,8 +1,27 @@
 export default defineAppConfig({
   ui: {
     colors: {
-      primary: 'accent',
 	    accent: 'accent',
+    },
+    button: {
+      compoundVariants: [{
+        color: 'accent',
+        variant: 'solid',
+        class: '-text-inverted'
+      }],
+      defaultVariants: {
+        color: 'accent',
+        variant: 'solid',
+        size: 'md',
+      }
+    },
+    navigationMenu: {
+      defaultVariants: {
+        color: 'neutral',
+        variant: 'pill',
+        highlight: 'soft',
+        highlightColor: 'neutral',
+      }
     },
     pageCTA: {
       slots: {

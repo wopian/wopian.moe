@@ -1,7 +1,7 @@
 <template>
   <div v-if="data" class="space-y-6">
     <!-- Hero -->
-    <div class="relative w-full aspect-16/3 rounded overflow-hidden shadow-md">
+    <div class="relative w-full sm:aspect-16/6 md:aspect-16/5 lg:aspect-16/4 xl:aspect-16/3 rounded overflow-hidden shadow-md">
       <NuxtImg
         :src="data.cover || 'https://cdn.wopian.me/assets/cover.avif'"
         alt="cover"
@@ -86,4 +86,14 @@ const dateRange = isMultipleDates
 const displayLocation = isMultipleLocations
   ? (location as string[]).join(', ')
   : location as string;
+
+useHead({
+  title: `${data.value?.title} - Photography by WOPIAN`,
+  meta: [
+    {
+      name: 'description',
+      content: `${data.value?.title} — ${displayLocation} — ${dateRange} — Photography by WOPIAN`,
+    }
+  ]
+})
 </script>

@@ -282,30 +282,49 @@ const links = ref([
     {
       label: 'Sponsor me on GitHub Sponsors',
       to: 'https://github.com/sponsors/wopian'
+    },
+    {
+      label: 'Support me on Ko-fi',
+      to: 'https://ko-fi.com/wopian',
+
     }
   ])
+
+useHead({
+  title: 'Open‑Source Software by WOPIAN',
+  meta: [
+    {
+      name: 'description',
+      content: 'Open‑source projects and developer tools by WOPIAN. Explore libraries, CLI tools and web applications focused on TypeScript, Vue and modern web development.'
+    }
+  ]
+})
 </script>
 
 <template>
+	<!--
 	<p>
 		I'm a Senior Software Engineer focused on open‑source web applications and developer tooling. I design, build and maintain scalable, community‑driven projects—ranging from libraries and CLI tools to full‑stack apps—primarily using TypeScript, Vue, and modern web platforms.
 	</p>
+	-->
 
 	<UPageCTA
 		class="rounded-xl"
 		:ui="{ container: 'py-12 lg:py-12' }"
 		variant="soft"
-		title="Like my work?"
-		description="If you enjoy my open-source contributions and want to support my work, consider sponsoring me!"
+		title="Support my open‑source work"
+		description="If you use or enjoy my projects, sponsoring helps cover development, hosting and maintenance — enabling new features, fixes and long‑term upkeep. Every contribution helps."
 	>
 		<template #links>
 		<UButton
-			v-for="link in links"
+			v-for="(link, index) in links"
 			:key="link.to"
 			:to="link.to"
+			:variant="index === 0 ? 'solid' : 'soft'"
+			:color="index === 0 ? 'accent' : 'neutral'"
+			size="xl"
 			target="_blank"
 			rel="noopener"
-			class="px-6 py-3 bg-accent text-white rounded hover:bg-accent-200 transition"
 		>
 			{{ link.label }}
 		</UButton>
@@ -329,8 +348,8 @@ const links = ref([
 				<UButton
 					v-for="tech in techListByCount"
 					:key="tech.key"
-					:color="selected.includes(tech.key) ? 'primary' : 'neutral'"
-					variant="outline"
+					:color="selected.includes(tech.key) ? 'accent' : 'neutral'"
+					:variant="selected.includes(tech.key) ? 'solid' : 'outline'"
 					size="sm"
 					class="cursor-pointer"
 					@click="() => toggleTech(tech.key)"
@@ -355,7 +374,8 @@ const links = ref([
 	</div>
 
   <UChangelogVersions :indicator="true" :ui="{
-	indicator: 'ml-3'
+	indicator: 'ml-3',
+	beam: 'bg-accent'
   }">
 	<UChangelogVersion
 	  v-for="version in filteredVersions.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())"
@@ -370,8 +390,9 @@ const links = ref([
 	>
 	  <template #indicator>
 		<!-- circle div as indicator -->
-		<div class="w-3 h-3 bg-primary rounded-full absolute top-5.5 -right-4.5 border border-bg"></div>
-		<UBadge :label="version.badge" variant="soft" v-if="version.badge" />
+		<div class="w-3 h-3 bg-accent rounded-full absolute top-5.5 -right-4.5 border border-bg"></div>
+
+		<UBadge :label="version.badge" variant="soft" color="accent" v-if="version.badge" />
 
 		<span class="text-sm text-muted">
 			{{

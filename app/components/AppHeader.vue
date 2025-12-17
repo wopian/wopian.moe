@@ -27,14 +27,14 @@ const items = computed<NavigationMenuItem[]>(() => [
     active: route.path.startsWith('/concerts')
   },
   {
-    label: 'Motorsport',
-    to: '/motorsport',
-    active: route.path.startsWith('/motorsport')
-  },
-  {
     label: 'Cosplay',
     to: '/cosplay',
     active: route.path.startsWith('/cosplay')
+  },
+  {
+    label: 'Motorsport',
+    to: '/motorsport',
+    active: route.path.startsWith('/motorsport')
   },
   {
     label: 'Other',
