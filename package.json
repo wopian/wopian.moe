@@ -13,7 +13,7 @@
     "@nuxt/hints": "1.0.0-alpha.3",
     "@nuxt/image": "2.0.0",
     "@nuxt/test-utils": "4.0.2",
-    "@nuxt/ui": "4.2.1",
+    "@nuxt/ui": "4.9.0",
     "@nuxtjs/tailwindcss": "7.0.0-beta.0",
     "@tabler/icons-vue": "^3.36.0",
     "nuxt": "^4.2.2"
