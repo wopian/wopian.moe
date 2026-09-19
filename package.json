@@ -11,7 +11,7 @@
   "dependencies": {
     "@nuxt/content": "^3.9.0",
     "@nuxt/hints": "1.0.0-alpha.3",
-    "@nuxt/image": "2.0.0",
+    "@nuxt/image": "2.1.0",
     "@nuxt/test-utils": "4.0.2",
     "@nuxt/ui": "4.8.1",
     "@nuxtjs/tailwindcss": "7.0.0-beta.0",
