@@ -1,20 +1,15 @@
-# Stage 1: Build app
-FROM oven/bun:1.4-slim AS build
+# Reproducible standalone build. CI packages its already verified output instead.
+FROM oven/bun:1.4.2-slim AS build
 WORKDIR /app
-
-COPY package.json bun.lock ./
-
-RUN bun install --frozen-lockfile --ignore-scripts
-
+COPY package.json bun.lock bunfig.toml ./
+RUN bun install --frozen-lockfile
 COPY . .
+RUN bun run build
 
-RUN bun --bun run build
+FROM scratch AS artifact
+LABEL org.opencontainers.image.source="https://github.com/wopian/wopian.moe"
+COPY .output/public /site
 
-# Stage 2: Production image
-FROM oven/bun:1.4-slim AS production
-WORKDIR /app
-
-COPY --from=build /app/.output /app
-
-EXPOSE 3000/tcp
-ENTRYPOINT ["bun", "--bun", "run", "/app/server/index.mjs"]
+FROM scratch AS production
+LABEL org.opencontainers.image.source="https://github.com/wopian/wopian.moe"
+COPY --from=build /app/.output/public /site

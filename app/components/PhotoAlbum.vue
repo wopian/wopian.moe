@@ -1,99 +1,25 @@
-<template>
-  <div v-if="data" class="space-y-6">
-    <!-- Hero -->
-    <div class="relative w-full sm:aspect-16/6 md:aspect-16/5 lg:aspect-16/4 xl:aspect-16/3 rounded overflow-hidden shadow-md">
-      <NuxtImg
-        :src="data.cover || 'https://cdn.wopian.me/assets/cover.avif'"
-        alt="cover"
-        class="object-cover w-full h-full rounded-xl blur-xs"
-      />
-      <div class="absolute inset-0 bg-linear-to-b from-transparent to-black/40"></div>
-      <div class="absolute bottom-4 left-4 text-white space-y-2">
-        <h1 class="text-4xl font-bold">{{ data.title }}</h1>
-        <p class="text-sm" v-if="data.location">
-          {{ displayLocation }}
-        </p>
-        <p class="text-sm">
-          {{ dateRange }}
-        </p>
-      </div>
-    </div>
-
-    <!-- Gallery -->
-    <div v-if="images?.length">
-      <h2 class="text-2xl font-semibold mb-3">Gallery</h2>
-      <ImageGallery :images="images" :cover="data.cover" />
-    </div>
-
-    <UEmpty
-      v-else
-      title="No images found"
-      description="It looks like there are no images available for this album."
-      icon="i-lucide-image-off"
-    />
-  </div>
-
-  <UEmpty
-    v-else
-    title="Album not found"
-    description="The requested photo album could not be found."
-    icon="i-lucide-folder-search"
-  />
-</template>
-
-<script lang="ts" setup>
-const {
-  type,
-  slug
-} = defineProps<{
-  type: "concerts" | "cosplay" | "other" | "motorsport";
-  slug: string
-}>()
-
-const { data } = await useAsyncData(`${type}-${slug}`, async () => {
-  const content = await queryCollection(type)
-    .where('path', '=', `/${type}/${slug}`)
-    .first()
-
-  if (!content) {
-    throw createError({ statusCode: 404, statusMessage: 'Album not found' })
-  }
-
-  return content
+<script setup lang="ts">
+import { IconArrowLeft, IconArrowUpRight } from '@tabler/icons-vue'
+import { formatAlbumDate, genreDetails, normalizeAlbum, trailingPath } from '~~/shared/portfolio'
+import type { Genre } from '~~/shared/portfolio'
+const props = defineProps<{ type: Genre; slug: string }>()
+const path = `/${props.type}/${props.slug}`
+const { data, error } = await useAsyncData(`album-${path}`, async () => {
+  const content = await queryCollection(props.type).path(path).first()
+  if (!content) throw createError({ statusCode: 404, statusMessage: 'Album not found' })
+  return normalizeAlbum(content)
 })
-
-const isValidImage = (item: any) => {
-  try {
-    new URL(item)
-    return true
-  } catch {
-    return false
-  }
-}
-
-const images = computed(() => {
-  return data.value?.images?.filter((img: any) => img && isValidImage(img)) || []
-})
-
-const { date, location } = data.value || {};
-const isMultipleDates = Array.isArray(date);
-const isMultipleLocations = Array.isArray(location);
-
-const dateRange = isMultipleDates
-  ? `${new Date(date[0] || '').toLocaleDateString()} - ${new Date(date[1] || '').toLocaleDateString()}`
-  : new Date(date as string).toLocaleDateString();
-
-const displayLocation = isMultipleLocations
-  ? (location as string[]).join(', ')
-  : location as string;
-
-useHead({
-  title: `${data.value?.title} - Photography by WOPIAN`,
-  meta: [
-    {
-      name: 'description',
-      content: `${data.value?.title} — ${displayLocation} — ${dateRange} — Photography by WOPIAN`,
-    }
-  ]
-})
+if (error.value) throw createError(error.value)
+if (!data.value) throw createError({ statusCode: 404, statusMessage: 'Album not found' })
+const album = computed(() => data.value!)
+const date = computed(() => formatAlbumDate(album.value.date))
+const details = genreDetails[props.type]
+usePortfolioSeo(album.value.title, `${album.value.title}. ${album.value.location}. ${date.value}. ${album.value.images.length} photographs by WOPIAN.`, album.value.cover)
 </script>
+<template>
+  <section class="album-page">
+    <div class="album-intro page-shell"><NuxtLink :to="trailingPath(`/${type}`)" class="text-link back-link"><IconArrowLeft :size="17" :stroke="1.5" />{{ details.label }}</NuxtLink><p class="eyebrow">{{ date }}</p><h1>{{ album.title }}</h1><div class="album-meta"><span v-if="album.location">{{ album.location }}</span><span>{{ album.images.length }} photographs</span></div></div>
+    <div v-if="album.cover && album.images.length" class="album-cover"><PortfolioImage :src="album.cover" :alt="album.title" eager /></div>
+    <div class="page-shell album-gallery-section"><div v-if="album.images.length" class="section-heading gallery-heading"><p class="eyebrow">All Photos</p><span class="gallery-hint">Select a photograph to look closer<IconArrowUpRight :size="16" /></span></div><ImageGallery v-if="album.images.length" :images="album.images" :title="album.title" /><div v-else class="empty-state"><p class="eyebrow">Still developing</p><h2>Photographs are on their way.</h2><p>This album exists, but photographs are not available yet.</p><NuxtLink :to="trailingPath(`/${type}`)" class="text-link">Explore {{ details.label.toLowerCase() }}<IconArrowUpRight :size="18" /></NuxtLink></div></div>
+  </section>
+</template>

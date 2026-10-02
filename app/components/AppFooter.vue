@@ -1,46 +1,15 @@
-<template>
-  <UFooter>
-    <template #left>
-      © 2014–{{ String(new Date().getFullYear()).slice(-2) }} {{ site }}. All rights reserved.
-    </template>
-
-    <UNavigationMenu :items="items" />
-
-    <template #right>
-      <UButton
-        icon="i-simple-icons-github"
-        color="neutral"
-        variant="ghost"
-        to="https://github.com/wopian"
-        target="_blank"
-        aria-label="GitHub"
-      />
-      <UButton
-        icon="i-simple-icons-x"
-        color="neutral"
-        variant="ghost"
-        to="https://x.com/wopian_"
-        target="_blank"
-        aria-label="X"
-      />
-      <UButton
-        icon="i-simple-icons-bluesky"
-        color="neutral"
-        variant="ghost"
-        to="https://bsky.app/profile/zeepki.st"
-        target="_blank"
-        aria-label="X"
-      />
-    </template>
-  </UFooter>
-</template>
-
-<script lang="ts" setup>
-import type { NavigationMenuItem } from '@nuxt/ui'
-
-const config = useRuntimeConfig()
-const site = config.public.siteName ?? 'WOPIAN PHOTOGRAPHY'
-const route = useRoute()
-
-const items = computed<NavigationMenuItem[]>(() => [])
+<script setup lang="ts">
+import { IconArrowUpRight } from '@tabler/icons-vue'
+const year = new Date().getUTCFullYear()
+const links = [
+  { label: 'Bluesky', href: 'https://bsky.app/profile/zeepki.st' },
+  { label: 'X', href: 'https://x.com/wopian_' },
+  { label: 'GitHub', href: 'https://github.com/wopian' },
+]
 </script>
+<template>
+  <footer class="site-footer page-shell">
+    <div class="footer-top"><NuxtLink class="wordmark footer-wordmark" to="/">WOPIAN<span class="brand-dot rounded-4xl" aria-hidden="true" /></NuxtLink><p>Concerts. Cosplay. Motorsport.<br>Photographs from inside the moment.</p><a class="text-link" href="https://ko-fi.com/wopian" target="_blank" rel="noopener noreferrer">Support the next shoot <IconArrowUpRight :size="18" /></a></div>
+    <div class="footer-bottom"><span>© 2014–{{ year }} WOPIAN. All rights reserved.</span><nav aria-label="More work"><NuxtLink to="/other/">Other photography</NuxtLink><NuxtLink to="/software/">Software</NuxtLink></nav><nav aria-label="Social links"><a v-for="link in links" :key="link.href" :href="link.href" target="_blank" rel="noopener noreferrer">{{ link.label }}<IconArrowUpRight :size="13" /></a></nav></div>
+  </footer>
+</template>

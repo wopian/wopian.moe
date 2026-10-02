@@ -1,45 +1,15 @@
 <script setup lang="ts">
-  const {
-    title,
-    date,
-    location,
-    cover,
-    slug,
-    images
-  } = defineProps<{
-    title: string
-    date: string | string[]
-    location?: string | string[]
-    cover?: string
-    slug: string
-    images: string[]
-  }>()
-
-const isMultipleDates = Array.isArray(date);
-const isMultipleLocations = Array.isArray(location);
-
-const dateRange = isMultipleDates
-  ? `${new Date(date[0] || '').toLocaleDateString()} - ${new Date(date[1] || '').toLocaleDateString()}`
-  : new Date(date as string).toLocaleDateString();
-
-const displayLocation = isMultipleLocations
-  ? (location as string[]).join(', ')
-  : location as string;
+import { IconArrowUpRight } from '@tabler/icons-vue'
+import { formatAlbumDate, normalizeAlbum, trailingPath } from '~~/shared/portfolio'
+import type { AlbumSource } from '~~/shared/portfolio'
+const props = defineProps<{ album: AlbumSource; index?: number }>()
+const item = computed(() => normalizeAlbum(props.album))
 </script>
-
 <template>
-  <NuxtLink :to="slug" class="block group">
-    <UCard variant="soft" class="overflow-hidden hover:shadow-lg transition-shadow rounded-xl">
-      <div class="relative aspect-video w-full mb-4">
-        <NuxtImg :src="cover || 'https://cdn.wopian.me/assets/cover.avif'" alt="cover" class="object-cover w-full h-full rounded-xl" />
-      </div>
-
-      <h2 class="text-lg font-semibold text-nowrap text-ellipsis overflow-clip">{{ title }}</h2>
-      <p class="text-sm text-accent-200/75 text-nowrap text-ellipsis overflow-clip" v-if="location">{{ displayLocation }}</p>
-      <div class="text-xs text-white/50 flex justify-between mt-1">
-        <p>{{ dateRange }}</p>
-        <p>{{ images.length }} photos</p>
-      </div>
-    </UCard>
-  </NuxtLink>
+  <article v-reveal class="album-card" :style="{ '--reveal-delay': `${Math.min(index ?? 0, 2) * 80}ms` }">
+    <NuxtLink :to="trailingPath(item.path)" class="album-card-link">
+      <div class="album-card-photo"><PortfolioImage v-if="item.cover" :src="item.cover" :alt="item.title" /><span class="photo-count">{{ item.images.length }} photographs</span><span class="card-open" aria-hidden="true"><IconArrowUpRight :size="26" :stroke="1.4" /></span></div>
+      <div class="album-card-caption"><span class="eyebrow">{{ formatAlbumDate(item.date) }}</span><h3>{{ item.title }}</h3><p v-if="item.location">{{ item.location }}</p></div>
+    </NuxtLink>
+  </article>
 </template>

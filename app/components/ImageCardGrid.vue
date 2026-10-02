@@ -1,35 +1,16 @@
-<template>
-  <h1 class="text-3xl font-semibold">{{ title }}</h1>
-
-  <div v-if="data?.length" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-    <ImageCard
-      v-for="c in sortedData"
-      :key="c.path"
-      :title="c.title"
-      :date="c.date"
-      :location="('location' in c) ? c.location : undefined"
-      :cover="c.cover"
-      :slug="c.path"
-      :images="c.images || []"
-    />
-  </div>
-
-  <p v-else class="text-gray-500">No albums found.</p>
-</template>
-
-<script lang="ts" setup>
-import type { ConcertsCollectionItem, CosplayCollectionItem, MotorsportCollectionItem, OtherCollectionItem } from '@nuxt/content';
-
-const { title, data } = defineProps<{
-  title: string;
-  data:
-    Pick<ConcertsCollectionItem | CosplayCollectionItem | OtherCollectionItem | MotorsportCollectionItem, "id" | "title" | "date" | "location" | "cover" | "images" | "path">[] |
-    undefined;
-}>()
-
-const sortedData = Array.from(data ?? []).sort((a, b) => {
-  const dateA = Array.isArray(a.date) ? a.date[0] : a.date
-  const dateB = Array.isArray(b.date) ? b.date[0] : b.date
-  return new Date(dateB ?? 0).getTime() - new Date(dateA ?? 0).getTime()
-})
+<script setup lang="ts">
+import { genreDetails, populatedAlbums, showcases } from '~~/shared/portfolio'
+import type { Genre, AlbumSource } from '~~/shared/portfolio'
+const props = defineProps<{ type: Genre; data?: AlbumSource[] }>()
+const albums = computed(() => populatedAlbums(props.data ?? []))
+const details = computed(() => genreDetails[props.type])
+const cover = computed(() => showcases.find(item => item.genre === props.type))
+const count = computed(() => albums.value.reduce((total, album) => total + album.images.length, 0))
 </script>
+<template>
+  <section class="archive-page page-shell">
+    <div class="archive-intro"><div v-reveal><h1>{{ details.heading }}</h1><p class="archive-description">{{ details.description }}</p><div class="archive-stat"><span>{{ albums.length }} {{ albums.length === 1 ? 'album' : 'albums' }}</span><span>{{ count.toLocaleString('en-GB') }} photographs</span></div></div><div v-if="cover" class="archive-cover"><PortfolioImage :src="cover.photoUrl" :alt="`${details.label} photography`" :position="cover.focalPosition" eager /></div></div>
+    <div v-if="albums.length" class="archive-grid"><ImageCard v-for="(album, index) in albums" :key="album.path" :album="album" :index="index % 3" /></div>
+    <div v-else class="empty-state"><span class="eyebrow">Still developing</span><h2>More photographs to come.</h2><p>New albums will appear here when photographs are ready.</p><NuxtLink to="/" class="text-link">Explore selected work</NuxtLink></div>
+  </section>
+</template>

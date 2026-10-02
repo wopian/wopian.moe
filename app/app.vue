@@ -1,20 +1,11 @@
 <template>
   <UApp>
-
-    <UMain>
-      <AppHeader />
-
-      <NuxtLayout>
-        <NuxtRouteAnnouncer />
-        <UContainer class="w-full h-full max-auto px-4 sm:px-6 lg-px-8 xl-px-10 py-8 space-y-8">
-          <NuxtPage />
-        </UContainer>
-      </NuxtLayout>
-    </UMain>
-
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <AppHeader />
+    <main id="main-content" tabindex="-1">
+      <NuxtRouteAnnouncer />
+      <NuxtPage />
+    </main>
     <AppFooter />
   </UApp>
 </template>
-
-<script setup lang="ts">
-</script>

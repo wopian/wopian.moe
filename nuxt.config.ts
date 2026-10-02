@@ -1,58 +1,26 @@
-// https://nuxt.com/docs/api/configuration/nuxt-config
+import { fileURLToPath } from 'node:url'
+import { albumRoutes } from './scripts/album-routes'
+
 export default defineNuxtConfig({
   ssr: true,
-  nitro: {
-    preset: 'bun',
-    node: true,
-    inlineDynamicImports: true,
-    serveStatic: 'inline',
-    esbuild: {
-      options: {
-        target: 'esnext',
-      }
-    }
-  },
-  typescript: {
-    strict: true,
-  },
-  modules: [
-    '@nuxtjs/tailwindcss',
-    '@nuxt/content',
-    '@nuxt/image',
-    '@nuxt/ui',
-  ],
+  compatibilityDate: '2026-10-02',
+  modules: ['@nuxt/content', '@nuxt/ui'],
+  css: ['~/assets/css/main.css'],
   devtools: { enabled: true },
-  future: {
-    compatibilityVersion: 4,
+  typescript: { strict: true },
+  app: {
+    pageTransition: { name: 'page', mode: 'out-in' },
+    head: { htmlAttrs: { lang: 'en' }, meta: [{ name: 'theme-color', content: '#0b0b0d' }] },
   },
-  compatibilityDate: '2024-04-03',
-  css: [
-    '@/assets/css/main.css'
-  ],
-  image: {
-    // TODO: Switch to CDN
-    dir: 'public'
-  },
-  colorMode: {
-    preference: 'dark',
-    fallback: 'dark',
-  },
-  ui: {
-    theme: {
-      colors: [
-        'primary',
-        'secondary',
-        'accent',
-        'info',
-        'success',
-        'warning',
-        'error'
-      ]
+  nitro: {
+    prerender: {
+      routes: await albumRoutes(fileURLToPath(new URL('./content', import.meta.url))),
+      crawlLinks: true, autoSubfolderIndex: true, failOnError: true, concurrency: 4,
     },
   },
-  runtimeConfig: {
-    public: {
-      siteName: 'WOPIAN',
-    }
-  }
+  content: { experimental: { sqliteConnector: 'bun' } },
+  icon: { clientBundle: { icons: ['lucide:menu', 'lucide:x', 'lucide:chevron-down', 'lucide:check', 'lucide:arrow-up-right'] } },
+  colorMode: { preference: 'dark', fallback: 'dark' },
+  ui: { fonts: false, theme: { colors: ['primary', 'secondary', 'accent', 'info', 'success', 'warning', 'error'] } },
+  runtimeConfig: { public: { siteName: 'WOPIAN', siteUrl: 'https://wopian.me' } },
 })

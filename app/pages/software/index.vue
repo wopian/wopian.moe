@@ -290,18 +290,12 @@ const links = ref([
     }
   ])
 
-useHead({
-  title: 'Open‑Source Software by WOPIAN',
-  meta: [
-    {
-      name: 'description',
-      content: 'Open‑source projects and developer tools by WOPIAN. Explore libraries, CLI tools and web applications focused on TypeScript, Vue and modern web development.'
-    }
-  ]
-})
+usePortfolioSeo('Open-source software', 'Open-source projects and developer tools by WOPIAN.')
 </script>
 
 <template>
+  <section class="software-page page-shell">
+    <div class="software-intro"><h1>Built to share.</h1><p>Open-source projects by WOPIAN.</p></div>
 	<!--
 	<p>
 		I'm a Senior Software Engineer focused on open‑source web applications and developer tooling. I design, build and maintain scalable, community‑driven projects—ranging from libraries and CLI tools to full‑stack apps—primarily using TypeScript, Vue, and modern web platforms.
@@ -313,7 +307,7 @@ useHead({
 		:ui="{ container: 'py-12 lg:py-12' }"
 		variant="soft"
 		title="Support my open‑source work"
-		description="If you use or enjoy my projects, sponsoring helps cover development, hosting and maintenance — enabling new features, fixes and long‑term upkeep. Every contribution helps."
+		description="If you use or enjoy my projects, sponsoring helps cover development, hosting and maintenance. Your support enables new features, fixes and long‑term upkeep. Every contribution helps."
 	>
 		<template #links>
 		<UButton
@@ -336,7 +330,7 @@ useHead({
 		<!-- multi-select (mobile) -->
 		<USelect
 			v-model="selected"
-			:options="techList.map(t => ({ label: t.name, value: t.key }))"
+			:items="techList.map(t => ({ label: t.name, value: t.key }))"
 			multiple
 			placeholder="Filter technologies"
 			class="mb-4 md:hidden"
@@ -466,4 +460,5 @@ useHead({
 	  </template>
 	</UChangelogVersion>
   </UChangelogVersions>
+  </section>
 </template>

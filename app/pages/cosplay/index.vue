@@ -1,21 +1,5 @@
-<template>
-  <ImageCardGrid title="Cosplay Shoots" :data="data" />
-</template>
-
 <script setup lang="ts">
-const { data } = await useAsyncData('cosplay', () => {
-  return queryCollection('cosplay')
-    .select('id', 'path', 'title', 'date', 'location', 'cover', 'images')
-    .all()
-})
-
-useHead({
-  title: 'Cosplay Photography by WOPIAN',
-  meta: [
-    {
-      name: 'description',
-      content: 'Discover WOPIAN\'s cosplay photography portfolio, showcasing vibrant and creative costumes from various cosplay events. Explore stunning photo albums capturing the artistry and passion of the cosplay community.'
-    }
-  ]
-})
+const { data } = await useAsyncData('cosplay-albums', () => queryCollection('cosplay').select('title', 'path', 'date', 'location', 'cover', 'images').all())
+usePortfolioSeo('Cosplay photography', 'Cosplay photography by WOPIAN. Portraits, conventions, and stories brought to life.')
 </script>
+<template><ImageCardGrid type="cosplay" :data="data ?? []" /></template>

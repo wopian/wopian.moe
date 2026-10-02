@@ -1,0 +1,10 @@
+.git
+node_modules
+.nuxt
+.data
+.cache*
+*.log
+.env
+.env.*
+.output/server
+.output/nitro.json

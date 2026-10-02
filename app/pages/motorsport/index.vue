@@ -1,21 +1,5 @@
-<template>
-  <ImageCardGrid title="Motorsport Events" :data="data?.reverse()" />
-</template>
-
 <script setup lang="ts">
-const { data = [] } = await useAsyncData('motorsport', () => {
-  return queryCollection('motorsport')
-    .select('id', 'path', 'title', 'date', 'location', 'cover', 'images')
-    .all()
-})
-
-useHead({
-  title: 'Motorsport Photography by WOPIAN',
-  meta: [
-    {
-      name: 'description',
-      content: 'Explore WOPIAN\'s motorsport photography portfolio. Browse photo albums capturing the speed and excitement of motorsport.'
-    }
-  ]
-})
+const { data } = await useAsyncData('motorsport-albums', () => queryCollection('motorsport').select('title', 'path', 'date', 'location', 'cover', 'images').all())
+usePortfolioSeo('Motorsport photography', 'Motorsport photography by WOPIAN. Machines, events, and details worth a closer look.')
 </script>
+<template><ImageCardGrid type="motorsport" :data="data ?? []" /></template>

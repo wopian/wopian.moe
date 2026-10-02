@@ -3,19 +3,30 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "nuxt build",
-    "dev": "nuxt dev",
-    "generate": "nuxt generate",
-    "preview": "nuxt preview"
+    "generate": "bun --bun run nuxt generate",
+    "typecheck": "bun --bun run nuxt typecheck",
+    "test": "bun test",
+    "preview": "bun scripts/serve-static.ts",
+    "build": "bun run generate && bun scripts/verify-static.ts",
+    "dev": "bun --bun run nuxt dev"
   },
   "dependencies": {
     "@nuxt/content": "^3.9.0",
     "@nuxt/hints": "^1.1.4",
-    "@nuxt/image": "^2.1.0",
     "@nuxt/test-utils": "^4.3.2",
     "@nuxt/ui": "^4.11.2",
-    "@nuxtjs/tailwindcss": "7.0.0-beta.0",
     "@tabler/icons-vue": "^3.36.0",
     "nuxt": "^4.2.2"
+  },
+  "packageManager": "bun@1.4.2",
+  "engines": {
+    "bun": "1.4.2"
+  },
+  "devDependencies": {
+    "@iconify-json/lucide": "^1.2.137",
+    "@types/bun": "^1.4.2",
+    "@types/node": "^24.0.0",
+    "typescript": "5.9.3",
+    "vue-tsc": "3.2.5"
   }
 }
