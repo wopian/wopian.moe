@@ -12,14 +12,24 @@ export default defineNuxtPlugin(nuxtApp => {
   }
   nuxtApp.vueApp.directive('reveal', {
     getSSRProps: () => ({}),
-    mounted(element: HTMLElement) {
+    beforeMount(element: HTMLElement) {
       if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+      // Hold the first frame before paint, including the stagger delay.
+      const animation = element.animate([{ opacity: 0, transform: 'translateY(20px)' }, { opacity: 1, transform: 'none' }], { duration: 600, easing: 'cubic-bezier(.2,.7,.2,1)', fill: 'backwards' })
+      animation.pause()
+      animation.addEventListener('finish', () => animations.delete(element), { once: true })
+      animations.set(element, animation)
+    },
+    mounted(element: HTMLElement) {
+      const animation = animations.get(element)
+      if (!animation) return
+      const delay = parseFloat(getComputedStyle(element).getPropertyValue('--reveal-delay')) || 0
+      animation.effect?.updateTiming({ delay })
       const observer = new IntersectionObserver(entries => {
         if (!entries.some(entry => entry.isIntersecting)) return
-        const delay = parseFloat(getComputedStyle(element).getPropertyValue('--reveal-delay')) || 0
-        animations.set(element, element.animate([{ opacity: 0, transform: 'translateY(20px)' }, { opacity: 1, transform: 'translateY(0)' }], { duration: 600, delay, easing: 'cubic-bezier(.2,.7,.2,1)' }))
         observer.disconnect()
         observers.delete(element)
+        animation.play()
       }, { threshold: 0.08 })
       observers.set(element, observer)
       observer.observe(element)
