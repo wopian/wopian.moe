@@ -44,7 +44,7 @@ jobs:
           bun scripts/check-static-http.ts http://127.0.0.1:4173
       - name: Archive static website
         run: tar -czf wopian-static.tar.gz -C .output/public .
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: wopian-static-${{ github.sha }}
           path: wopian-static.tar.gz
