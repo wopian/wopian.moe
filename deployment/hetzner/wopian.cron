@@ -1,0 +1,2 @@
+# Install once with crontab -e on Hetzner host.
+*/5 * * * * sh /root/zeepkist/update-wopian.sh >> /root/zeepkist/wopian-update.log 2>&1
