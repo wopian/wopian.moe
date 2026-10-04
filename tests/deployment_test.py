@@ -45,13 +45,16 @@ esac
     def tearDown(self):
         self.temporary.cleanup()
 
-    def release(self, character, asset=None):
+    def release(self, character, asset=None, build_id=None):
         digest = character * 64
+        build_id = build_id or digest
         root = self.registry / digest
         root.mkdir()
         content = {'index.html': '<h1>Home</h1>', 'concerts/event/index.html': '<h1>Event</h1>',
                    '404.html': '<h1>Outside the frame.</h1>',
-                   '_nuxt/' + (asset or character + '.js'): 'console.log("' + character + '")'}
+                   '_nuxt/' + (asset or character + '.js'): 'console.log("' + character + '")',
+                   '_nuxt/builds/latest.json': json.dumps({'id': build_id, 'timestamp': ord(character)}),
+                   '_nuxt/builds/meta/' + build_id + '.json': json.dumps({'id': build_id, 'revision': character})}
         for name, text in content.items():
             target = root / name
             target.parent.mkdir(parents=True, exist_ok=True)
@@ -97,6 +100,25 @@ esac
                 self.assertEqual(self.current(), 'releases/' + first)
                 self.assertEqual(list((self.site / 'releases').glob('.stage-*')), [])
 
+    def test_latest_manifest_follows_activation_and_rollback(self):
+        first, second = self.release('a'), self.release('b')
+        self.run_update(first)
+        shared_latest = self.site / 'assets/_nuxt/builds/latest.json'
+        self.assertFalse(shared_latest.exists())
+        # Old deployments left this mutable file in the retained asset directory.
+        shared_latest.write_text((self.site / 'current/_nuxt/builds/latest.json').read_text())
+        self.run_update(second)
+        self.assertEqual(json.loads((self.site / 'current/_nuxt/builds/latest.json').read_text())['id'], second)
+        self.assertEqual(json.loads(shared_latest.read_text())['id'], first)
+        for digest in (first, second):
+            self.assertTrue((self.site / 'assets/_nuxt/builds/meta' / (digest + '.json')).is_file())
+        self.run_update(second, rollback=True)
+        self.assertEqual(json.loads((self.site / 'current/_nuxt/builds/latest.json').read_text())['id'], first)
+        old = time.time() - 31 * 24 * 60 * 60
+        os.utime(shared_latest, (old, old))
+        self.run_update(first)
+        self.assertFalse(shared_latest.exists())
+
     def test_corrupt_file_preserves_current(self):
         first, second = self.release('a'), self.release('b')
         self.run_update(first)
@@ -124,6 +146,16 @@ esac
         self.assertNotEqual(result.returncode, 0)
         self.assertIn('Immutable asset collision', result.stderr)
         self.assertEqual(self.current(), 'releases/' + first)
+
+    def test_versioned_manifest_collision_preserves_current(self):
+        first = self.release('a')
+        second = self.release('b', build_id=first)
+        self.run_update(first)
+        result = self.run_update(second, 'collision')
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn('Immutable asset collision: _nuxt/builds/meta/' + first + '.json', result.stderr)
+        self.assertEqual(self.current(), 'releases/' + first)
+        self.assertEqual(json.loads((self.site / 'current/_nuxt/builds/latest.json').read_text())['id'], first)
 
     def test_retention_protects_current_and_previous(self):
         digests = [self.release(character) for character in 'abcd']

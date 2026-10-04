@@ -12,6 +12,22 @@ No application container runs.
 `assets/_nuxt` retains immutable JavaScript, CSS, and WASM files for 30 days after
 their last deployment. Current and previous assets remain protected regardless of age.
 
+Versioned Nuxt build metadata under `_nuxt/builds/meta` also stays immutable.
+`_nuxt/builds/latest.json` changes each build and stays inside its release.
+Caddy serves this pointer from `current` with `Cache-Control: no-cache`, so
+activation and rollback switch it atomically with the HTML. In the `wopian.me`
+site block, keep this exact route before the `handle /_nuxt/*` asset route:
+
+```caddyfile
+handle /_nuxt/builds/latest.json {
+    root * /srv/wopian/current
+    header Cache-Control "no-cache"
+    file_server
+}
+```
+
+Old shared copies of `latest.json` are bypassed and expire through normal pruning.
+
 The updater needs Docker, Python 3.9 or newer, `flock`, and GNU coreutils.
 It pulls `ghcr.io/wopian/wopian.moe/static:latest`, creates a stopped temporary
 container, and copies `/site`. It never starts the image. SHA-256 verification

@@ -49,13 +49,18 @@ def validate(root):
     return manifest
 
 
+def is_immutable_asset(name):
+    # Nuxt's latest build pointer changes at each release activation.
+    return name.startswith('_nuxt/') and name != '_nuxt/builds/latest.json'
+
+
 def publish_assets(release, assets):
     manifest = validate(release)
     assets.mkdir(parents=True, exist_ok=True)
     if assets.is_symlink():
         raise ValueError('Asset directory must not be a symlink')
     for name, expected in manifest['files'].items():
-        if not name.startswith('_nuxt/'):
+        if not is_immutable_asset(name):
             continue
         target = safe_file(assets, name)
         target.parent.mkdir(parents=True, exist_ok=True)
@@ -83,7 +88,7 @@ def prune(site):
         if link.is_symlink():
             protected.add(link.resolve())
             manifest = json.loads((link / 'release-manifest.json').read_text())
-            protected_assets.update(name for name in manifest['files'] if name.startswith('_nuxt/'))
+            protected_assets.update(name for name in manifest['files'] if is_immutable_asset(name))
     releases = site / 'releases'
     for release in releases.iterdir():
         if re.fullmatch(r'[0-9a-f]{64}', release.name) and release.is_dir() and not release.is_symlink():
