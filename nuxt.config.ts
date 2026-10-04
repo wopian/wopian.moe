@@ -8,6 +8,8 @@ export default defineNuxtConfig({
   css: ['~/assets/css/main.css'],
   devtools: { enabled: true },
   typescript: { strict: true },
+  // Preload dependency changes must change chunk URLs for immutable caching.
+  experimental: { entryImportMap: false },
   app: {
     pageTransition: { name: 'page', mode: 'out-in' },
     head: { htmlAttrs: { lang: 'en' }, meta: [{ name: 'theme-color', content: '#0b0b0d' }] },

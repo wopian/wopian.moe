@@ -30,6 +30,12 @@ jobs:
       - run: bun test
       - run: python3 -m unittest discover -s tests -p '*_test.py'
       - run: bun run build
+      - name: Check immutable assets across builds
+        run: |
+          previous_build=$(mktemp -d)
+          cp -a .output/public/. "$previous_build/"
+          bun run build
+          bun scripts/check-immutable-assets.ts "$previous_build" .output/public
       - name: Test generated files over HTTP
         run: |
           PORT=4173 bun run preview > /tmp/wopian-preview.log 2>&1 &
