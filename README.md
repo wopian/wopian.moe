@@ -24,13 +24,9 @@ their existing URLs.
 ```sh
 bun run typecheck
 bun test
-python3 -m unittest discover -s tests -p '*_test.py'
 bun run build
 bun run preview
 ```
-
-Deployment tests run on Linux and use mocked Docker extraction with real file
-validation, symlink switching, and locking. On Windows, run them through WSL.
 
 `build` runs `nuxt generate`, then checks every Markdown route and writes a
 SHA-256 release manifest. Current content produces **69 page-specific
@@ -48,7 +44,7 @@ All photographs load directly from original CDN URLs. No Nuxt Image or IPX
 processing runs. Gallery links work without JavaScript. Nuxt Content
 queries during interactive navigation run in browser SQLite.
 
-## Publication and Caddy
+## Publication
 
 CI type-checks, tests, generates, and verifies the website. It uploads a static
 archive and publishes a file-only image:
@@ -58,12 +54,6 @@ ghcr.io/wopian/wopian.moe/static:latest
 ghcr.io/wopian/wopian.moe/static:sha-<commit>
 ```
 
-The previous application package remains separate during migration. Docker
-builds default to a static image with `/site`; no entrypoint starts a server.
 
-Host updater checks every five minutes, validates extracted files, retains old
-hashed assets, and atomically selects a release. Caddy mounts the release
-directory read-only. First rollout and rollback instructions:
-[Static WOPIAN delivery](deployment/hetzner/README.md).
 
 Canonical domain: `https://wopian.me`. Keep host redirects from `.moe` and `www`.
