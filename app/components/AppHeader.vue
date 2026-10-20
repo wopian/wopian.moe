@@ -8,7 +8,7 @@ const secondaryLinks = [{ label: 'Other', to: '/other' }, { label: 'Software', t
 const fallbackNavigation = `<nav class="noscript-nav" aria-label="Navigation without JavaScript">${[...primaryLinks, ...secondaryLinks].map(link => `<a href="${trailingPath(link.to)}">${link.label}</a>`).join('')}</nav>`
 </script>
 <template>
-  <UHeader class="site-header" mode="slideover" :ui="{ container: 'header-inner', center: 'flex-1', right: 'gap-5' }" :menu="{ title: 'Explore WOPIAN', description: 'Photography and other work' }">
+  <UHeader class="site-header" mode="slideover" :ui="{ container: 'header-inner', center: 'flex-1', right: 'gap-5', content: 'mobile-menu-content', body: 'mobile-menu-body' }" :menu="{ title: 'Explore WOPIAN', description: 'Photography and other work' }">
     <template #title><span class="wordmark">WOPIAN<span class="brand-dot rounded-4xl" aria-hidden="true" /></span></template>
     <nav class="primary-nav" aria-label="Photography">
       <NuxtLink v-for="link in primaryLinks" :key="link.to" :to="trailingPath(link.to)" :aria-current="route.path.startsWith(link.to) ? 'page' : undefined" class="nav-link">{{ link.label }}</NuxtLink>

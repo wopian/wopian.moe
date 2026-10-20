@@ -7,12 +7,20 @@ export default defineNuxtConfig({
   modules: ['@nuxt/content', '@nuxt/ui'],
   css: ['~/assets/css/main.css'],
   devtools: { enabled: true },
+  devServer: { port: 4002 },
   typescript: { strict: true },
   // Preload dependency changes must change chunk URLs for immutable caching.
   experimental: { entryImportMap: false },
   app: {
     pageTransition: { name: 'page', mode: 'out-in' },
-    head: { htmlAttrs: { lang: 'en' }, meta: [{ name: 'theme-color', content: '#0b0b0d' }] },
+    head: {
+      htmlAttrs: { lang: 'en' },
+      viewport: 'width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content',
+      meta: [
+        { name: 'theme-color', content: '#0b0b0d' },
+        { name: 'color-scheme', content: 'dark' },
+      ],
+    },
   },
   nitro: {
     prerender: {

@@ -2,7 +2,15 @@
 import { IconArrowUpRight, IconArrowDown } from '@tabler/icons-vue'
 import { showcases, trailingPath } from '~~/shared/portfolio'
 const selected = ref(0)
+const pressed = ref<number | null>(null)
 const current = computed(() => showcases[selected.value]!)
+function startPress(index: number, event: PointerEvent) {
+  if (!event.isPrimary || event.button !== 0) return
+  pressed.value = index
+}
+function endPress(index: number) {
+  if (pressed.value === index) pressed.value = null
+}
 </script>
 <template>
   <section class="portfolio-hero" aria-labelledby="hero-title">
@@ -13,7 +21,22 @@ const current = computed(() => showcases[selected.value]!)
       <NuxtLink class="hero-album-link text-link text-right" :to="trailingPath(current.albumPath)"><span><span class="eyebrow">Featured Event</span><span class="hero-album-title">{{ current.title }}</span></span><IconArrowUpRight :size="28" :stroke="1.2" /></NuxtLink>
     </div>
     <div class="hero-bottom page-shell">
-      <div class="genre-controls" role="group" aria-label="Select featured photography genre"><button v-for="(showcase, index) in showcases" :key="showcase.genre" type="button" :aria-pressed="selected === index" @click="selected = index"><span>{{ showcase.label }}</span><span class="genre-indicator" aria-hidden="true" /></button></div>
+      <div class="genre-controls" role="group" aria-label="Select featured photography genre">
+        <button
+          v-for="(showcase, index) in showcases"
+          :key="showcase.genre"
+          type="button"
+          :aria-pressed="selected === index"
+          :data-pointer-pressed="pressed === index ? 'true' : undefined"
+          @pointerdown="startPress(index, $event)"
+          @pointerup="endPress(index)"
+          @pointercancel="endPress(index)"
+          @pointerleave="endPress(index)"
+          @blur="endPress(index)"
+          @keydown="pressed = null"
+          @click="selected = index"
+        ><span>{{ showcase.label }}</span><span class="genre-indicator" aria-hidden="true" /></button>
+      </div>
       <a href="#selected-work" class="explore-link"><span class="eyebrow">Explore my work</span><IconArrowDown :size="19" :stroke="1.5" /></a>
     </div>
   </section>

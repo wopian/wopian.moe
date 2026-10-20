@@ -13,6 +13,8 @@ bun install --frozen-lockfile
 bun run dev
 ```
 
+Dev server uses port **4002**.
+
 Curate homepage photographs in `shared/portfolio.ts`. Each showcase defines its
 genre, existing album path, original CDN photograph, and focal position. Keep
 album Markdown under `content/<category>/`. Blank covers and null photograph
