@@ -81,8 +81,10 @@ a, h1, h2, h3 { overflow-wrap: anywhere; }
 .hero-main-print { position: relative; min-width: 0; display: block; align-self: center; aspect-ratio: 108/86; background: var(--ui-text); color: #101010; transform: rotate(var(--print-rotation, -1deg)); }
 /* Wide cheki: 108 × 86 frame, 99 × 62 photo, heavier bottom border. */
 .hero-main-print .portfolio-image { position: absolute; inset: 5.232558% 4.166667% 22.674419%; width: auto; height: auto; }
-.hero-print-title { position: absolute; inset: 77.325581% 4.166667% 0; display: flex; align-items: center; justify-content: center; container-type: size; overflow: hidden; color: var(--ui-bg); font-weight: 800; letter-spacing: -.045em; line-height: 1; text-align: center; }
-.hero-print-title-text { display: block; flex-shrink: 0; white-space: nowrap; font-size: min(72px, 72cqh, calc(160cqw / var(--hero-title-length))); }
+.cheki-caption { position: absolute; display: flex; align-items: center; justify-content: center; container-type: size; overflow: hidden; color: var(--ui-bg); font-weight: 800; letter-spacing: -.045em; line-height: 1; text-align: center; }
+.cheki-caption-text { display: flex; flex-direction: column; align-items: center; flex-shrink: 0; white-space: nowrap; font-size: min(var(--caption-maximum), calc(72cqh / var(--caption-lines)), calc(160cqw / var(--caption-longest))); }
+.hero-print-title { inset: 77.325581% 4.166667% 0; }
+.hero-mini-caption { inset: 76.744186% 7.407407% 0; }
 .hero-side-group { min-width: 0; align-self: center; }
 .hero-side { min-width: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; align-content: center; align-items: center; padding-block: 12px 24px; }
 .hero-small-print { position: relative; min-width: 0; display: block; aspect-ratio: 54/86; background: var(--ui-text); color: #101010; transform: rotate(var(--print-rotation, -5deg)); }

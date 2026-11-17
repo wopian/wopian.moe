@@ -1,28 +1,19 @@
 <script setup lang="ts">
 import { showcases, trailingPath } from '~~/shared/portfolio'
 import { photoRotation } from '~~/shared/photo-rotation'
+import { chekiDateLines, chekiLocationLines } from '~~/shared/cheki-caption'
+import type { AlbumSource } from '~~/shared/portfolio'
+const props = withDefaults(defineProps<{ albums?: AlbumSource[] }>(), { albums: () => [] })
 const selected = ref(0)
-const enhanced = ref(false)
 const current = computed(() => showcases[selected.value]!)
+const currentAlbum = computed(() => props.albums.find(album => album.path === current.value.albumPath))
+const locationLines = computed(() => chekiLocationLines(currentAlbum.value?.location))
+const dateLines = computed(() => currentAlbum.value ? chekiDateLines(currentAlbum.value.date) : [])
 const wordmark = ref<HTMLElement | null>(null)
-const printTitle = ref<HTMLElement | null>(null)
-const printTitleText = ref<HTMLElement | null>(null)
 const mastheadVisible = useState('homepage-masthead-visible', () => true)
 let observer: IntersectionObserver | undefined
 let resizeObserver: ResizeObserver | undefined
-let titleObserver: ResizeObserver | undefined
-function fitPrintTitle() {
-  const container = printTitle.value
-  const text = printTitleText.value
-  if (!container || !text || !container.clientWidth || !container.clientHeight) return
-  const maximum = Math.min(72, container.clientHeight * 0.72)
-  text.style.fontSize = `${maximum}px`
-  const size = Math.min(maximum, maximum * (container.clientWidth - 2) / Math.max(1, text.scrollWidth))
-  text.style.fontSize = `${Math.floor(size * 100) / 100}px`
-}
-watch(() => current.value.title, fitPrintTitle, { flush: 'post' })
 onMounted(() => {
-  enhanced.value = true
   const header = document.querySelector('.site-header')
   function observeWordmark() {
     observer?.disconnect()
@@ -40,14 +31,10 @@ onMounted(() => {
     resizeObserver = new ResizeObserver(observeWordmark)
     resizeObserver.observe(header)
   }
-  fitPrintTitle()
-  titleObserver = new ResizeObserver(fitPrintTitle)
-  if (printTitle.value) titleObserver.observe(printTitle.value)
 })
 onBeforeUnmount(() => {
   observer?.disconnect()
   resizeObserver?.disconnect()
-  titleObserver?.disconnect()
   mastheadVisible.value = true
 })
 </script>
@@ -58,18 +45,19 @@ onBeforeUnmount(() => {
     <div class="hero-spread">
       <NuxtLink :to="trailingPath(current.albumPath)" class="hero-main-print" :style="{ '--print-rotation': photoRotation(current.photoUrl) }" :aria-label="`View ${current.title} album`">
         <PortfolioImage :src="current.photoUrl" :alt="`${current.title} — selected photograph`" :position="current.focalPosition" eager />
-        <span ref="printTitle" class="hero-print-title" :style="{ '--hero-title-length': current.title.length }" aria-live="polite" aria-atomic="true"><span ref="printTitleText" class="hero-print-title-text">{{ current.title }}</span></span>
+        <ChekiCaption class="hero-print-title" :lines="[current.title]" aria-live="polite" aria-atomic="true" />
       </NuxtLink>
       <div class="hero-side-group">
         <div class="hero-index">
-          <div v-if="enhanced" class="genre-controls" role="group" aria-label="Select featured photography genre">
+          <div class="genre-controls" role="group" aria-label="Select featured photography genre">
             <button v-for="(showcase, index) in showcases" :key="showcase.genre" type="button" :aria-pressed="selected === index" @click="selected = index">{{ showcase.label }}</button>
           </div>
-          <a v-else href="#category-index" class="text-link">Browse categories</a>
         </div>
         <div class="hero-side">
-          <NuxtLink v-for="(photo, index) in current.supportingPhotos" :key="index" :to="trailingPath(current.albumPath)" class="hero-small-print" :style="{ '--print-rotation': photoRotation(photo.url, 5) }" :aria-label="`View ${current.title}, selected frame ${index + 2}`">
+          <NuxtLink v-for="(photo, index) in current.supportingPhotos" :key="index" :to="trailingPath(current.albumPath)" class="hero-small-print" :style="{ '--print-rotation': photoRotation(photo.url, 5) }" :aria-label="`View ${current.title}, selected frame ${index + 2}`" :aria-describedby="index === 0 && locationLines.length ? 'hero-location-caption' : index === 1 && dateLines.length ? 'hero-date-caption' : undefined">
             <PortfolioImage :src="photo.url" :alt="`${current.title} — selected photograph ${index + 2}`" :position="photo.position" />
+            <ChekiCaption v-if="index === 0 && locationLines.length" id="hero-location-caption" class="hero-mini-caption" :lines="locationLines" />
+            <ChekiCaption v-if="index === 1 && dateLines.length" id="hero-date-caption" class="hero-mini-caption" :lines="dateLines" />
           </NuxtLink>
         </div>
       </div>

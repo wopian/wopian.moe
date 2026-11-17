@@ -3,9 +3,19 @@ import { showcases, populatedAlbums, genreDetails, trailingPath, albumTimestamp 
 import type { Genre } from '~~/shared/portfolio'
 const genres: Genre[] = ['concerts', 'cosplay', 'motorsport', 'other']
 const { data } = await useAsyncData('homepage-albums', async () => {
-  return await Promise.all(genres.map(async genre => ({ genre, albums: populatedAlbums(await queryCollection(genre).select('title', 'path', 'date', 'cover', 'images', 'location').all()) })))
+  return await Promise.all(genres.map(async genre => {
+    const sources = await queryCollection(genre).select('title', 'path', 'date', 'cover', 'images', 'location').all()
+    return {
+      genre,
+      albums: populatedAlbums(sources),
+      featuredAlbums: sources.filter(album => showcases.some(showcase => showcase.albumPath === album.path))
+        .map(({ title, path, date, location }) => ({ title, path, date, location })),
+    }
+  }))
 })
-const latest = computed(() => (data.value ?? []).flatMap(collection => collection.albums)
+const allAlbums = computed(() => (data.value ?? []).flatMap(collection => collection.albums))
+const featuredAlbums = computed(() => (data.value ?? []).flatMap(collection => collection.featuredAlbums))
+const latest = computed(() => allAlbums.value
   .filter(album => !showcases.some(showcase => showcase.albumPath === album.path))
   .sort((a, b) => albumTimestamp(b.date) - albumTimestamp(a.date) || a.path.localeCompare(b.path)).slice(0, 12))
 function albumsFor(genre: Genre) { return data.value?.find(collection => collection.genre === genre)?.albums ?? [] }
@@ -14,7 +24,7 @@ usePortfolioSeo('Concert, cosplay & motorsport photography', 'Photography by WOP
 
 <template>
   <div class="home-page">
-    <PortfolioHero />
+    <PortfolioHero :albums="featuredAlbums" />
     <div class="page-shell">
       <section id="latest-albums" class="latest-section">
         <div class="section-heading"><h2>Latest albums<span class="heading-dot">.</span></h2></div>
