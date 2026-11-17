@@ -1,7 +1,14 @@
 <script setup lang="ts">
 import { IconX, IconChevronLeft, IconChevronRight, IconArrowUpRight } from '@tabler/icons-vue'
 import { swipeDirection } from '~~/shared/portfolio'
+import { getPhotoAspectRatio, getPhotoPlaceholder } from '~~/shared/photo-dimensions'
+import { photoLayoutStyles } from '~~/shared/photo-layout'
 const props = defineProps<{ images: string[]; title: string }>()
+const photos = computed(() => props.images.map(src => ({ src, aspectRatio: getPhotoAspectRatio(src), placeholder: getPhotoPlaceholder(src) })))
+const layout = computed(() => photoLayoutStyles(photos.value.map(photo => photo.aspectRatio ?? 1)))
+const enhanced = ref(false)
+const density = ref<'contact' | 'large'>('contact')
+onMounted(() => { enhanced.value = true })
 const open = ref(false)
 const selected = ref(0)
 const failed = ref(false)
@@ -46,13 +53,14 @@ onBeforeUnmount(() => { open.value = false; trigger.value = null })
 </script>
 <template>
   <div class="image-gallery">
-    <div class="photo-masonry"><a v-for="(src, index) in images" :key="`${src}-${index}`" :href="src" class="gallery-photo" :aria-label="`Open photograph ${index + 1} of ${images.length} from ${title}`" @click="openLightbox(index, $event)"><img :src="src" :alt="`${title} — photograph ${index + 1}`" loading="lazy" decoding="async" @error="($event.target as HTMLImageElement).classList.add('thumbnail-unavailable')"><span class="gallery-photo-number" aria-hidden="true">{{ String(index + 1).padStart(2, '0') }}</span></a></div>
+    <div class="gallery-toolbar" :class="{ 'is-pending': !enhanced }" :aria-hidden="!enhanced ? 'true' : undefined"><div class="density-controls" role="group" aria-label="Gallery layout"><button type="button" :disabled="!enhanced" :aria-pressed="density === 'contact'" @click="density = 'contact'">Contact sheet</button><button type="button" :disabled="!enhanced" :aria-pressed="density === 'large'" @click="density = 'large'">Large photos</button></div></div>
+    <div class="photo-masonry" :style="layout.container" :class="{ 'large-photos': density === 'large' }"><a v-for="({ src, aspectRatio, placeholder }, index) in photos" :key="`${src}-${index}`" :href="src" class="gallery-photo" :style="layout.photos[index]" :aria-label="`Open photograph ${index + 1} of ${images.length} from ${title}`" @click="openLightbox(index, $event)"><img :src="src" :alt="`${title} — photograph ${index + 1}`" :style="{ aspectRatio, backgroundImage: placeholder ? `url(${placeholder})` : undefined }" loading="lazy" decoding="async" @error="($event.target as HTMLImageElement).classList.add('thumbnail-unavailable')"><span class="gallery-photo-number" aria-hidden="true">{{ String(index + 1).padStart(2, '0') }}</span></a></div>
     <UModal v-model:open="open" :title="`${title} — photograph ${selected + 1}`" description="Use left and right arrow keys or swipe to change photograph. Press Escape to close." fullscreen :close="false" :content="{ onCloseAutoFocus: restoreFocus }" :ui="{ content: 'lightbox-content', overlay: 'bg-black/95' }">
       <template #content>
         <div class="lightbox" @keydown="onKey">
-          <div class="lightbox-top"><div><span class="eyebrow">{{ title }}</span><span class="lightbox-counter" aria-live="polite" aria-atomic="true">{{ selected + 1 }} / {{ images.length }}</span></div><UButton color="neutral" variant="ghost" aria-label="Close photograph" class="lightbox-button" @click="open = false"><IconX :size="25" :stroke="1.5" /></UButton></div>
-          <div class="lightbox-stage" @touchstart.passive="onTouchStart" @touchend="onTouchEnd" @touchcancel="touchStart = null"><Transition name="photo" mode="out-in"><div :key="current" class="lightbox-frame"><img v-if="!failed" :src="current" :alt="`${title} — photograph ${selected + 1}`" decoding="async" @error="onImageError"><div v-else class="lightbox-error"><h2>Photograph unavailable</h2><p>Try another photograph or open the original.</p></div></div></Transition></div>
-          <div class="lightbox-bottom"><UButton color="neutral" variant="ghost" aria-label="Previous photograph" class="lightbox-button" :disabled="images.length < 2" @click="move(-1)"><IconChevronLeft :size="23" :stroke="1.5" /><span>Previous</span></UButton><a :href="current" target="_blank" rel="noopener noreferrer" class="text-link">Open original<IconArrowUpRight :size="16" /></a><UButton color="neutral" variant="ghost" aria-label="Next photograph" class="lightbox-button" :disabled="images.length < 2" @click="move(1)"><span>Next</span><IconChevronRight :size="23" :stroke="1.5" /></UButton></div>
+          <div class="lightbox-top"><div><span class="eyebrow">{{ title }}</span><span class="lightbox-counter" aria-live="polite" aria-atomic="true">{{ selected + 1 }} / {{ images.length }}</span></div><UButton color="neutral" variant="ghost" aria-label="Close photograph" class="lightbox-button" @click="open = false"><IconX :size="25" stroke="1.5" /></UButton></div>
+          <div class="lightbox-stage" @touchstart.passive="onTouchStart" @touchend="onTouchEnd" @touchcancel="touchStart = null"><div :key="current" class="lightbox-frame"><img v-if="!failed" :src="current" :alt="`${title} — photograph ${selected + 1}`" :style="{ aspectRatio: getPhotoAspectRatio(current) }" decoding="async" @error="onImageError"><div v-else class="lightbox-error"><h2>Photograph unavailable</h2><p>Try another photograph or open the original.</p></div></div></div>
+          <div class="lightbox-bottom"><UButton color="neutral" variant="ghost" aria-label="Previous photograph" class="lightbox-button" :disabled="images.length < 2" @click="move(-1)"><IconChevronLeft :size="23" stroke="1.5" /><span>Previous</span></UButton><a :href="current" target="_blank" rel="noopener noreferrer" class="text-link">Open original<IconArrowUpRight :size="16" /></a><UButton color="neutral" variant="ghost" aria-label="Next photograph" class="lightbox-button" :disabled="images.length < 2" @click="move(1)"><span>Next</span><IconChevronRight :size="23" stroke="1.5" /></UButton></div>
         </div>
       </template>
     </UModal>

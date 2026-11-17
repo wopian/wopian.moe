@@ -12,12 +12,12 @@ export default defineNuxtConfig({
   // Preload dependency changes must change chunk URLs for immutable caching.
   experimental: { entryImportMap: false },
   app: {
-    pageTransition: { name: 'page', mode: 'out-in' },
+    pageTransition: false,
     head: {
       htmlAttrs: { lang: 'en' },
       viewport: 'width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content',
       meta: [
-        { name: 'theme-color', content: '#0b0b0d' },
+        { name: 'theme-color', content: '#101010' },
         { name: 'color-scheme', content: 'dark' },
       ],
     },

@@ -1,12 +1,12 @@
 import { describe, expect, test } from 'bun:test'
 import { resolve } from 'node:path'
 import { albumRoutes } from '../scripts/album-routes'
-import { formatAlbumDate, normalizeAlbum, photoUrls, populatedAlbums, showcases, swipeDirection, trailingPath } from '../shared/portfolio'
+import { albumYears, filterAlbums, formatAlbumDate, normalizeAlbum, photoUrls, populatedAlbums, showcases, swipeDirection, trailingPath } from '../shared/portfolio'
 
 const album = { title: 'Event', path: '/concerts/event', date: '2026-02-01' }
 
 describe('album content contracts', () => {
-  test('null entries and blank covers never count as photographs', () => {
+  test('null entries and blank covers never count as photos', () => {
     expect(photoUrls([null, '', 'invalid', 'javascript:alert(1)', 'https://cdn.wopian.me/photos/2026/test.avif'])).toEqual(['https://cdn.wopian.me/photos/2026/test.avif'])
     expect(normalizeAlbum({ ...album, cover: null, images: [null] }).images).toEqual([])
   })
@@ -43,5 +43,42 @@ describe('album content contracts', () => {
     expect(swipeDirection(start, { x: 180, y: 100 })).toBe(-1)
     expect(swipeDirection(start, { x: 70, y: 100 })).toBe(0)
     expect(swipeDirection(start, { x: 170, y: 190 })).toBe(0)
+  })
+})
+
+
+describe('archive browsing', () => {
+  const image = 'https://cdn.wopian.me/photos/2026/test.avif'
+  const albums = populatedAlbums([
+    { ...album, title: 'ASP in the UK', location: ['London', 'Bristol'], date: ['2025-09-21', '2025-09-25'], images: [image] },
+    { ...album, path: '/concerts/another', title: 'Another show', location: null, images: [image] },
+    { ...album, path: '/concerts/older', title: 'Older show', location: 'London', date: '2024-01-01', images: [image] },
+  ])
+  test('search matches title or normalized location and combines with year', () => {
+    expect(filterAlbums(albums, '  aSp  ', '2025').map(item => item.title)).toEqual(['ASP in the UK'])
+    expect(filterAlbums(albums, 'BRISTOL', '').map(item => item.title)).toEqual(['ASP in the UK'])
+    expect(filterAlbums(albums, 'london', '2024').map(item => item.title)).toEqual(['Older show'])
+    expect(filterAlbums(albums, 'ASP', '2024')).toEqual([])
+    expect(filterAlbums(albums, 'missing', '')).toEqual([])
+  })
+  test('cleared filters restore all albums in original order, including missing locations', () => {
+    const before = [...albums]
+    filterAlbums(albums, 'london', '')
+    expect(filterAlbums(albums, '', '')).toEqual(before)
+    expect(albums).toEqual(before)
+  })
+  test('year options use valid UTC years and support multiple event dates', () => {
+    expect(albumYears(['2024-12-31', '2025-01-01', '2025-01-02', 'invalid'])).toEqual(['2025', '2024'])
+    expect(albumYears('invalid')).toEqual([])
+    expect(albumYears('2025-01-01T00:30:00+01:00')).toEqual(['2024'])
+  })
+  test('curated frames belong to linked albums and never repeat', async () => {
+    for (const showcase of showcases) {
+      const markdown = await Bun.file(resolve(`content${showcase.albumPath}.md`)).text()
+      const images = markdown.split('images:')[1] ?? ''
+      const frames = [showcase.photoUrl, ...(showcase.supportingPhotos ?? []).map(photo => photo.url)]
+      expect(new Set(frames).size).toBe(frames.length)
+      for (const frame of frames) expect(images).toContain(frame)
+    }
   })
 })

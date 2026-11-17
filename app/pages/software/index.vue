@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
+import { formatAlbumDate } from '~~/shared/portfolio'
 import {
 	IconBrandVue,
 	IconBrandTypescript,
@@ -237,6 +238,8 @@ const versions = [
   }
 ];
 
+const enhanced = ref(false)
+onMounted(() => { enhanced.value = true })
 const selected = ref<string[]>([]);
 
 // toggles a technology key in the selected list
@@ -252,8 +255,8 @@ function clearFilters() {
 }
 
 const filteredVersions = computed(() => {
-	if (selected.value.length === 0) return versions;
-	return versions.filter(v =>
+	if (selected.value.length === 0) return [...versions].sort((a, b) => Date.parse(b.date) - Date.parse(a.date));
+	return [...versions].sort((a, b) => Date.parse(b.date) - Date.parse(a.date)).filter(v =>
 		v.authors.some(a => {
 			const key = techKeyByName[a.name];
 			return key !== undefined && selected.value.includes(key);
@@ -295,170 +298,14 @@ usePortfolioSeo('Open-source software', 'Open-source projects and developer tool
 
 <template>
   <section class="software-page page-shell">
-    <div class="software-intro"><h1>Built to share.</h1><p>Open-source projects by WOPIAN.</p></div>
-	<!--
-	<p>
-		I'm a Senior Software Engineer focused on open‑source web applications and developer tooling. I design, build and maintain scalable, community‑driven projects—ranging from libraries and CLI tools to full‑stack apps—primarily using TypeScript, Vue, and modern web platforms.
-	</p>
-	-->
-
-	<UPageCTA
-		class="rounded-xl"
-		:ui="{ container: 'py-12 lg:py-12' }"
-		variant="soft"
-		title="Support my open‑source work"
-		description="If you use or enjoy my projects, sponsoring helps cover development, hosting and maintenance. Your support enables new features, fixes and long‑term upkeep. Every contribution helps."
-	>
-		<template #links>
-		<UButton
-			v-for="(link, index) in links"
-			:key="link.to"
-			:to="link.to"
-			:variant="index === 0 ? 'solid' : 'soft'"
-			:color="index === 0 ? 'accent' : 'neutral'"
-			size="xl"
-			target="_blank"
-			rel="noopener"
-		>
-			{{ link.label }}
-		</UButton>
-		</template>
-	</UPageCTA>
-
-	<!-- Filter bar: multi-select for small screens, pill buttons for larger screens -->
-	<div class="my-6">
-		<!-- multi-select (mobile) -->
-		<USelect
-			v-model="selected"
-			:items="techList.map(t => ({ label: t.name, value: t.key }))"
-			multiple
-			placeholder="Filter technologies"
-			class="mb-4 md:hidden"
-		/>
-
-		<!-- button pills (desktop) -->
-		<div class="hidden md:flex flex-wrap gap-2 items-center">
-			<div class="flex flex-wrap gap-2">
-				<UButton
-					v-for="tech in techListByCount"
-					:key="tech.key"
-					:color="selected.includes(tech.key) ? 'accent' : 'neutral'"
-					:variant="selected.includes(tech.key) ? 'solid' : 'outline'"
-					size="sm"
-					class="cursor-pointer"
-					@click="() => toggleTech(tech.key)"
-					:aria-pressed="selected.includes(tech.key)"
-				>
-					<component :is="tech.icon" class="w-4 h-4 mr-2" />
-					{{ tech.name }} ({{ versions.filter(v => v.authors.some(a => a.name === tech.name)).length }})
-				</UButton>
-				<!-- clear button -->
-				<UButton
-					color="neutral"
-					variant="ghost"
-					size="sm"
-					class="cursor-pointer"
-					@click="clearFilters"
-					v-if="selected.length > 0"
-				>
-					Clear
-				</UButton>
-			</div>
-		</div>
-	</div>
-
-  <UChangelogVersions :indicator="true" :ui="{
-	indicator: 'ml-3',
-	beam: 'bg-accent'
-  }">
-	<UChangelogVersion
-	  v-for="version in filteredVersions.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())"
-	  :key="version.title"
-	  v-bind="version"
-	  :badge="undefined"
-	  class="flex items-start"
-	  :ui="{
-		container: 'flex-1',
-		indicator: 'sticky top-(--ui-header-height) pt-4 -mt-4 flex flex-col items-end',
-	  }"
-	>
-	  <template #indicator>
-		<!-- circle div as indicator -->
-		<div class="w-3 h-3 bg-accent rounded-full absolute top-5.5 -right-4.5 border border-bg"></div>
-
-		<UBadge :label="version.badge" variant="soft" color="accent" v-if="version.badge" />
-
-		<span class="text-sm text-muted">
-			{{
-				new Date(version.date).toLocaleDateString('en-US', {
-					year: 'numeric',
-					month: 'short',
-					day: 'numeric'
-				})
-			}}
-		</span>
-		<span class="text-sm text-muted" v-if="version.endDate">
-			– {{
-				new Date(version.endDate).toLocaleDateString('en-US', {
-					year: 'numeric',
-					month: 'short',
-					day: 'numeric'
-				})
-			}}
-		</span>
-		<span class="text-sm text-muted">
-			{{
-				(() => {
-					const start = new Date(version.date);
-					const end = version.endDate ? new Date(version.endDate) : new Date();
-					const ms = Math.abs(end.getTime() - start.getTime());
-					const day = 1000 * 60 * 60 * 24;
-					const days = Math.floor(ms / day);
-					const years = Math.floor(days / 365);
-					const months = Math.floor((days % 365) / 30);
-
-					const plural = (n: number, unit: string) => `${n} ${unit}${n === 1 ? '' : 's'}`;
-
-					if (version.endDate) {
-						if (years > 0) return `${plural(years, 'year')}${months ? ' ' + plural(months, 'month') : ''}`;
-						if (months > 0) return plural(months, 'month');
-						return plural(days, 'day');
-					} else {
-						const now = new Date();
-						if (start <= now) {
-							// active since start -> "active for X"
-							const msSince = Math.abs(now.getTime() - start.getTime());
-							const daysSince = Math.floor(msSince / day);
-							const yearsSince = Math.floor(daysSince / 365);
-							const monthsSince = Math.floor((daysSince % 365) / 30);
-							if (yearsSince > 0) return `${plural(yearsSince, 'year')}${monthsSince ? ' ' + plural(monthsSince, 'month') : ''}`;
-							if (monthsSince > 0) return `${plural(monthsSince, 'month')}`;
-							return plural(daysSince, 'day');
-						}
-					}
-				})()
-			}}
-		</span>
-
-	  </template>
-
-	  <template #authors>
-		<div class="flex space-x-2">
-		<template v-for="author in [...version.authors].sort((a, b) => a.name.localeCompare(b.name))" :key="author.name">
-			<UButton
-				color="neutral"
-				variant="ghost"
-				:aria-label="author.name"
-			>
-				<component
-					:is="author.icon"
-					class="w-5 h-5" />
-				<span class="ml-2">{{ author.name }}</span>
-			</UButton>
-		</template>
-		</div>
-	  </template>
-	</UChangelogVersion>
-  </UChangelogVersions>
+    <div class="software-intro"><h1>Software<span class="heading-dot">.</span></h1><p>Web apps, game mods, libraries, and tools I build and maintain.</p></div>
+    <section class="support-section"><div><h2>Support open-source work.</h2><p>Sponsoring helps cover development, hosting, and maintenance.</p></div><div class="support-links"><a v-for="link in links" :key="link.to" class="outline-link" :href="link.to" target="_blank" rel="noopener noreferrer">{{ link.label }} <span aria-hidden="true">↗</span></a></div></section>
+    <div v-if="enhanced" class="software-filters"><details><summary>Filter by technology <span>{{ selected.length ? `${selected.length} selected` : 'All technologies' }}</span></summary><div class="tech-filters" role="group" aria-label="Filter projects by technology"><button v-for="tech in techListByCount" :key="tech.key" type="button" :aria-pressed="selected.includes(tech.key)" @click="toggleTech(tech.key)">{{ tech.name }} <span>{{ tech.count }}</span></button><button v-if="selected.length" type="button" class="clear-filters" @click="clearFilters">Clear filters</button></div></details><div class="project-filter-status"><p class="filter-count" role="status">{{ filteredVersions.length }} {{ filteredVersions.length === 1 ? 'project' : 'projects' }}</p><button v-if="selected.length" type="button" class="text-link" @click="clearFilters">Clear filters</button></div></div>
+    <div class="project-index">
+      <article v-for="version in filteredVersions" :key="version.title" class="project-row">
+        <div class="project-body"><h2><a :href="version.to" target="_blank" rel="noopener noreferrer">{{ version.title }} <span aria-hidden="true">↗</span></a></h2><p>{{ version.description }}</p><ul class="project-technologies" aria-label="Technologies"><li v-for="author in [...version.authors].sort((a, b) => a.name.localeCompare(b.name))" :key="author.name"><component :is="author.icon" :size="16" aria-hidden="true" />{{ author.name }}</li></ul></div>
+        <div class="project-meta"><span v-if="version.badge" class="project-status">{{ version.badge }}</span><span>{{ formatAlbumDate(version.date) }}<template v-if="version.endDate"> – {{ formatAlbumDate(version.endDate) }}</template></span></div>
+      </article>
+    </div>
   </section>
 </template>

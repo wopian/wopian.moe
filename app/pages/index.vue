@@ -1,27 +1,30 @@
 <script setup lang="ts">
-import { IconArrowUpRight } from '@tabler/icons-vue'
-import { showcases, populatedAlbums, trailingPath } from '~~/shared/portfolio'
+import { showcases, populatedAlbums, genreDetails, trailingPath, albumTimestamp } from '~~/shared/portfolio'
+import type { Genre } from '~~/shared/portfolio'
+const genres: Genre[] = ['concerts', 'cosplay', 'motorsport', 'other']
 const { data } = await useAsyncData('homepage-albums', async () => {
-  const [concerts, cosplay, motorsport] = await Promise.all([
-    queryCollection('concerts').select('title', 'path', 'date', 'cover', 'images', 'location').all(),
-    queryCollection('cosplay').select('title', 'path', 'date', 'cover', 'images', 'location').all(),
-    queryCollection('motorsport').select('title', 'path', 'date', 'cover', 'images', 'location').all(),
-  ])
-  return { concerts: populatedAlbums(concerts), cosplay: populatedAlbums(cosplay), motorsport: populatedAlbums(motorsport) }
+  return await Promise.all(genres.map(async genre => ({ genre, albums: populatedAlbums(await queryCollection(genre).select('title', 'path', 'date', 'cover', 'images', 'location').all()) })))
 })
-const totalPhotos = computed(() => Object.values(data.value ?? {}).flat().reduce((count, album) => count + album.images.length, 0))
-usePortfolioSeo('Concert, cosplay & motorsport photography', 'Photography by WOPIAN. Explore live music, cosplay portraits, and motorsport through selected photographs and complete event albums.')
+const latest = computed(() => (data.value ?? []).flatMap(collection => collection.albums)
+  .filter(album => !showcases.some(showcase => showcase.albumPath === album.path))
+  .sort((a, b) => albumTimestamp(b.date) - albumTimestamp(a.date) || a.path.localeCompare(b.path)).slice(0, 12))
+function albumsFor(genre: Genre) { return data.value?.find(collection => collection.genre === genre)?.albums ?? [] }
+usePortfolioSeo('Concert, cosplay & motorsport photography', 'Photography by WOPIAN. Browse photos from live music, cosplay events, motorsport, and travels.')
 </script>
+
 <template>
   <div class="home-page">
     <PortfolioHero />
     <div class="page-shell">
-      <section id="selected-work" class="selected-section">
-        <div v-reveal class="section-heading selected-heading"><div><h2>Look a little<br><span class="muted-heading">closer.</span></h2></div><p class="section-description text-right">From the front row to another world.<br>{{ totalPhotos.toLocaleString('en-GB') }} photographs.</p></div>
-        <div class="genre-grid"><NuxtLink v-for="(showcase, index) in showcases" :key="showcase.genre" v-reveal :to="trailingPath(`/${showcase.genre}`)" class="genre-tile" :style="{ '--reveal-delay': `${index * 80}ms` }"><PortfolioImage :src="showcase.photoUrl" :alt="`${showcase.label} photography by WOPIAN`" :position="showcase.focalPosition" /><div class="genre-tile-shade" /><div class="genre-tile-caption"><h3>{{ showcase.label }}</h3><p>{{ showcase.description }}</p></div><IconArrowUpRight class="genre-tile-arrow" :size="30" :stroke="1.3" /></NuxtLink></div>
+      <section id="latest-albums" class="latest-section">
+        <div class="section-heading"><h2>Latest albums<span class="heading-dot">.</span></h2></div>
+        <div class="latest-grid"><ImageCard v-for="(album, index) in latest" :key="album.path" :album="album" :index="index" /></div>
       </section>
-      <div class="recent-work"><LatestOfType v-for="showcase in showcases" :key="showcase.genre" :type="showcase.genre" :albums="data?.[showcase.genre] ?? []" /></div>
-      <section v-reveal class="support-section"><div><h2>More moments<br>to come.</h2><p>If the photographs mean something to you, a coffee helps make the next shoot happen.</p></div><a class="outline-link" href="https://ko-fi.com/wopian" target="_blank" rel="noopener noreferrer">Support me on Ko-fi<IconArrowUpRight :size="22" :stroke="1.4" /></a></section>
+      <PhotographySupport />
+      <section id="category-index" class="category-index" aria-labelledby="category-title">
+        <div class="section-heading"><h2 id="category-title">The archive</h2></div>
+        <NuxtLink v-for="genre in genres" :key="genre" :to="trailingPath(`/${genre}`)" class="category-row"><h3>{{ genreDetails[genre].label }}</h3><span class="category-count">{{ albumsFor(genre).length }} {{ albumsFor(genre).length === 1 ? 'album' : 'albums' }}</span><span class="category-arrow" aria-hidden="true">↗</span></NuxtLink>
+      </section>
     </div>
   </div>
 </template>

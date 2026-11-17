@@ -22,23 +22,36 @@ export interface Showcase {
   focalPosition: string
   title: string
   description: string
+  supportingPhotos?: { url: string; position: string }[]
 }
 export const showcases: Showcase[] = [
   { genre: 'concerts', label: 'Concerts', number: '01',
     albumPath: '/concerts/2025-09-21-asp-in-the-uk',
     photoUrl: 'https://cdn.wopian.me/photos/2025/DSCF0233.avif',
     focalPosition: '60% 40%', title: 'ASP in the UK',
-    description: 'Lights down. Volume up. Right there in the crowd.' },
+    description: 'Gigs, festivals, and the view from the crowd.',
+    supportingPhotos: [
+      { url: 'https://cdn.wopian.me/photos/2025/DSCF0432.avif', position: '50% 50%' },
+      { url: 'https://cdn.wopian.me/photos/2025/DSCF0433.avif', position: '50% 50%' },
+    ] },
   { genre: 'cosplay', label: 'Cosplay', number: '02',
     albumPath: '/cosplay/2024-06-22-secret-con-prison',
-    photoUrl: 'https://cdn.wopian.me/photos/2022/WOPA1199.avif',
-    focalPosition: '0% 0%', title: 'Secret Con Gloucester Prison II',
-    description: 'Extraordinary characters. Stories brought to life.' },
+    photoUrl: 'https://cdn.wopian.me/photos/2024/DSCF6479.avif',
+    focalPosition: '50% 40%', title: 'Secret Con Gloucester Prison II',
+    description: 'Cosplay portraits, conventions, and meetups.',
+    supportingPhotos: [
+      { url: 'https://cdn.wopian.me/photos/2024/DSCF6457.avif', position: '50% 40%' },
+      { url: 'https://cdn.wopian.me/photos/2024/DSCF6459.avif', position: '50% 40%' },
+    ] },
   { genre: 'motorsport', label: 'Motorsport', number: '03',
     albumPath: '/motorsport/2020-02-23-london-classic-car-show',
     photoUrl: 'https://cdn.wopian.me/photos/2020/2WOP1346.avif',
     focalPosition: '55% 50%', title: 'London Classic Car Show',
-    description: 'Machines with presence. Details worth a closer look.' },
+    description: 'Track days, drag racing, and car shows.',
+    supportingPhotos: [
+      { url: 'https://cdn.wopian.me/photos/2020/2WOP1268.avif', position: '50% 50%' },
+      { url: 'https://cdn.wopian.me/photos/2020/2WOP1335.avif', position: '50% 50%' },
+    ] },
 ]
 export const genreDetails: Record<Genre, { label: string; number: string; heading: string; description: string }> = {
   concerts: { label: 'Concerts', number: '01', heading: 'Feel the noise.', description: 'Live music, electric crowds, and the moments between the lights. A view from the front.' },
@@ -64,6 +77,16 @@ export function normalizeAlbum(source: AlbumSource): Album {
 export function albumTimestamp(date: string | string[]): number {
   const timestamp = Date.parse(Array.isArray(date) ? date[0] ?? '' : date)
   return Number.isFinite(timestamp) ? timestamp : 0
+}
+export function albumYears(date: string | string[]): string[] {
+  return [...new Set((Array.isArray(date) ? date : [date])
+    .filter(value => Number.isFinite(Date.parse(value)))
+    .map(value => String(new Date(value).getUTCFullYear())))].sort().reverse()
+}
+export function filterAlbums(albums: Album[], search: string, year: string): Album[] {
+  const query = search.trim().toLocaleLowerCase('en-GB')
+  return albums.filter(album => (!year || albumYears(album.date).includes(year))
+    && (!query || `${album.title} ${album.location}`.toLocaleLowerCase('en-GB').includes(query)))
 }
 export function populatedAlbums(sources: AlbumSource[]): Album[] {
   return sources.map(normalizeAlbum).filter(album => album.images.length > 0)

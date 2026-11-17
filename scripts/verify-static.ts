@@ -3,11 +3,13 @@ import { join, relative, resolve } from 'node:path'
 import { createHash } from 'node:crypto'
 import { albumRoutes } from './album-routes'
 import { writeStatic404 } from './static-404'
+import { getPhotoAspectRatio, getPhotoPlaceholder } from '../shared/photo-dimensions'
 
 const root = resolve('.output/public')
 const routes = await albumRoutes(resolve('content'))
 const files: Record<string, string> = {}
 let galleryPhotos = 0
+let sizedImages = 0
 await writeStatic404(root)
 
 function assert(condition: unknown, message: string): asserts condition {
@@ -21,6 +23,17 @@ for (const route of routes) {
   const canonical = `https://wopian.me${route === '/' ? '/' : `${route}/`}`
   assert(html.includes(`rel="canonical" href="${canonical}"`), `Missing canonical URL: ${route}`)
   assert(!html.includes('/_ipx/'), `Unexpected image processing URL: ${route}`)
+  for (const [tag] of html.matchAll(/<img\b[^>]*>/g)) {
+    const src = tag.match(/\ssrc="([^"]+)"/)?.[1]?.replaceAll('&amp;', '&')
+    if (!src?.startsWith('https://cdn.wopian.me/')) continue
+    const aspectRatio = getPhotoAspectRatio(src)
+    const renderedRatio = Number(tag.match(/aspect-ratio:\s*([\d.]+)/)?.[1])
+    assert(aspectRatio && renderedRatio === aspectRatio,
+      `Missing or incorrect image aspect ratio: ${route} (${src})`)
+    const placeholder = getPhotoPlaceholder(src)
+    assert(placeholder && html.includes(placeholder), `Missing ThumbHash preview: ${route} (${src})`)
+    sizedImages++
+  }
   if (route.split('/').filter(Boolean).length === 2) {
     const source = await readFile(join('content', `${route.slice(1)}.md`), 'utf8')
     const count = [...source.matchAll(/^\s*-\s+https?:\/\/[^\s]+/gm)].length
@@ -49,4 +62,5 @@ await writeFile(join(root, 'release-manifest.json'), JSON.stringify({
   formatVersion: 1, revision: process.env.GITHUB_SHA ?? 'local', generatedAt: new Date().toISOString(), routes, files,
 }, null, 2) + '\n')
 assert(!Object.keys(files).some(path => path.startsWith('_ipx/')), 'Unexpected generated image processing output')
-console.log(`Verified ${routes.length} static pages and ${galleryPhotos} gallery links. All photographs use original CDN URLs.`)
+console.log(`Verified ${routes.length} static pages and ${galleryPhotos} gallery links. All photos use original CDN URLs.`)
+console.log(`Verified build-time aspect ratios and ThumbHash previews on ${sizedImages} rendered images.`)
