@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'bun:test'
-import { photoLayout, photoLayoutStyles } from '../shared/photo-layout'
+import { photoLayout, photoLayoutStyles, masonryLayout } from '../shared/photo-layout'
 
 describe('ordered photo masonry', () => {
   test('equal photos read left to right, then down', () => {
@@ -30,5 +30,30 @@ describe('ordered photo masonry', () => {
   test('rejects invalid geometry', () => {
     for (const columns of [0, -1, 1.5]) expect(() => photoLayout([1.5], columns)).toThrow()
     for (const ratio of [0, -1, Infinity, NaN]) expect(() => photoLayout([ratio], 2)).toThrow()
+  })
+})
+
+describe('category album masonry', () => {
+  test('albums start across columns and fill available space in source order', () => {
+    const layout = masonryLayout([200, 500, 250, 300, 100, 180], 3, 24)
+    expect(layout.positions).toEqual([
+      { column: 0, top: 0 }, { column: 1, top: 0 }, { column: 2, top: 0 },
+      { column: 0, top: 224 }, { column: 2, top: 274 }, { column: 2, top: 398 },
+    ])
+    expect(layout.height).toBe(578)
+  })
+
+  test('caption height changes preserve gaps and container height', () => {
+    const layout = masonryLayout([420, 210, 90], 2, 20)
+    expect(layout.positions).toEqual([{ column: 0, top: 0 }, { column: 1, top: 0 }, { column: 1, top: 230 }])
+    expect(layout.height).toBe(420)
+    expect(masonryLayout([420, 310, 90], 1, 20).positions.map(item => item.top)).toEqual([0, 440, 770])
+    expect(masonryLayout([], 3, 24)).toEqual({ positions: [], height: 0 })
+  })
+
+  test('rejects invalid measured geometry', () => {
+    expect(() => masonryLayout([100], 0, 24)).toThrow()
+    expect(() => masonryLayout([100], 2, -1)).toThrow()
+    expect(() => masonryLayout([NaN], 2, 24)).toThrow()
   })
 })

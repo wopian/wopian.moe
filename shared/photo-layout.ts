@@ -1,15 +1,30 @@
 // 5px top padding plus a 26px number label. Keep gallery CSS in sync.
 const frameHeight = 31
 
+function shortestColumn(heights: number[]) {
+  return heights.reduce((shortest, height, index) => height < heights[shortest]! ? index : shortest, 0)
+}
+
+export function masonryLayout(itemHeights: number[], columns: number, gap: number) {
+  if (!Number.isInteger(columns) || columns < 1 || !Number.isFinite(gap) || gap < 0) throw new Error('Invalid masonry geometry')
+  const heights = Array<number>(columns).fill(0)
+  const positions = itemHeights.map(height => {
+    if (!Number.isFinite(height) || height < 0) throw new Error('Invalid masonry item height')
+    const column = shortestColumn(heights)
+    const top = heights[column]!
+    heights[column] = top + height + gap
+    return { column, top }
+  })
+  return { positions, height: Math.max(0, ...heights.map(height => height - gap)) }
+}
+
 export function photoLayout(aspectRatios: number[], columns: number) {
   if (!Number.isInteger(columns) || columns < 1) throw new Error('Invalid photo column count')
   const heights = Array.from({ length: columns }, () => ({ units: 0, count: 0 }))
   const positions = aspectRatios.map(aspectRatio => {
     if (!Number.isFinite(aspectRatio) || aspectRatio <= 0) throw new Error('Invalid photo aspect ratio')
     // Balance image heights and frames using a representative column width.
-    const column = heights.reduce((shortest, height, index) =>
-      height.units * 300 + height.count * (frameHeight + 16)
-        < heights[shortest]!.units * 300 + heights[shortest]!.count * (frameHeight + 16) ? index : shortest, 0)
+    const column = shortestColumn(heights.map(height => height.units * 300 + height.count * (frameHeight + 16)))
     const position = { column, ...heights[column]! }
     heights[column]!.units += 1 / aspectRatio
     heights[column]!.count++

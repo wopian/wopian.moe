@@ -28,11 +28,11 @@ export const showcases: Showcase[] = [
   { genre: 'concerts', label: 'Concerts', number: '01',
     albumPath: '/concerts/2025-09-21-asp-in-the-uk',
     photoUrl: 'https://cdn.wopian.me/photos/2025/DSCF0233.avif',
-    focalPosition: '60% 40%', title: 'ASP in the UK',
+    focalPosition: '50% 40%', title: 'ASP in the UK',
     description: 'Gigs, festivals, and the view from the crowd.',
     supportingPhotos: [
-      { url: 'https://cdn.wopian.me/photos/2025/DSCF0432.avif', position: '50% 50%' },
-      { url: 'https://cdn.wopian.me/photos/2025/DSCF0433.avif', position: '50% 50%' },
+      { url: 'https://cdn.wopian.me/photos/2025/DSCF0495.avif', position: '50% 10%' },
+      { url: 'https://cdn.wopian.me/photos/2025/DSCF0440.avif', position: '50% 50%' },
     ] },
   { genre: 'cosplay', label: 'Cosplay', number: '02',
     albumPath: '/cosplay/2024-06-22-secret-con-prison',
@@ -40,8 +40,8 @@ export const showcases: Showcase[] = [
     focalPosition: '50% 40%', title: 'Secret Con Gloucester Prison II',
     description: 'Cosplay portraits, conventions, and meetups.',
     supportingPhotos: [
-      { url: 'https://cdn.wopian.me/photos/2024/DSCF6457.avif', position: '50% 40%' },
-      { url: 'https://cdn.wopian.me/photos/2024/DSCF6459.avif', position: '50% 40%' },
+      { url: 'https://cdn.wopian.me/photos/2024/DSCF6457.avif', position: '50% 50%' },
+      { url: 'https://cdn.wopian.me/photos/2024/DSCF7346.avif', position: '50% 50%' },
     ] },
   { genre: 'motorsport', label: 'Motorsport', number: '03',
     albumPath: '/motorsport/2020-02-23-london-classic-car-show',
@@ -50,7 +50,7 @@ export const showcases: Showcase[] = [
     description: 'Track days, drag racing, and car shows.',
     supportingPhotos: [
       { url: 'https://cdn.wopian.me/photos/2020/2WOP1268.avif', position: '50% 50%' },
-      { url: 'https://cdn.wopian.me/photos/2020/2WOP1335.avif', position: '50% 50%' },
+      { url: 'https://cdn.wopian.me/photos/2020/2WOP1323.avif', position: '50% 50%' },
     ] },
 ]
 export const genreDetails: Record<Genre, { label: string; number: string; heading: string; description: string }> = {
