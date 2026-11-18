@@ -15,6 +15,35 @@ const failed = ref(false)
 const trigger = shallowRef<HTMLElement | null>(null)
 const current = computed(() => props.images[selected.value]!)
 const touchStart = ref<{ x: number; y: number } | null>(null)
+const lightboxImage = ref<HTMLImageElement | null>(null)
+let fade: Animation | undefined
+let revealVersion = 0
+let pendingReveal = false
+
+function cancelReveal() {
+  revealVersion++
+  pendingReveal = false
+  fade?.cancel()
+  fade = undefined
+}
+
+async function revealPhoto(image: HTMLImageElement | null) {
+  if (!pendingReveal || !open.value || failed.value || !image?.complete || !image.naturalWidth
+    || image !== lightboxImage.value || image.getAttribute('src') !== current.value) return
+
+  pendingReveal = false
+  const version = revealVersion
+  try { await image.decode() } catch { return }
+  if (version !== revealVersion || !open.value || failed.value || image !== lightboxImage.value) return
+
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches
+  const easing = getComputedStyle(image).getPropertyValue('--ease-out').trim()
+  fade = image.animate([{ opacity: reduced ? 0.96 : 0.84 }, { opacity: 1 }],
+    { duration: reduced ? 60 : 120, easing })
+}
+
+watch(lightboxImage, image => { void revealPhoto(image) }, { flush: 'post' })
+watch(open, isOpen => { if (!isOpen) cancelReveal() }, { flush: 'sync' })
 watch(selected, () => { failed.value = false })
 function openLightbox(index: number, event: MouseEvent) {
   if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return
@@ -24,9 +53,20 @@ function openLightbox(index: number, event: MouseEvent) {
   failed.value = false
   open.value = true
 }
-function move(direction: number) { selected.value = (selected.value + direction + props.images.length) % props.images.length }
+function move(direction: number, animate = false) {
+  if (props.images.length < 2) return
+  cancelReveal()
+  pendingReveal = animate
+  selected.value = (selected.value + direction + props.images.length) % props.images.length
+}
+function onImageLoad(event: Event) {
+  void revealPhoto(event.currentTarget as HTMLImageElement)
+}
 function onImageError(event: Event) {
-  if ((event.target as HTMLImageElement).getAttribute('src') === current.value) failed.value = true
+  const image = event.currentTarget as HTMLImageElement
+  if (image !== lightboxImage.value || image.getAttribute('src') !== current.value) return
+  cancelReveal()
+  failed.value = true
 }
 function onKey(event: KeyboardEvent) {
   if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return
@@ -45,11 +85,11 @@ function onTouchEnd(event: TouchEvent) {
   const touch = event.changedTouches[0]
   if (touch && touchStart.value) {
     const direction = swipeDirection(touchStart.value, { x: touch.clientX, y: touch.clientY })
-    if (direction) move(direction)
+    if (direction) move(direction, true)
   }
   touchStart.value = null
 }
-onBeforeUnmount(() => { open.value = false; trigger.value = null })
+onBeforeUnmount(() => { cancelReveal(); open.value = false; trigger.value = null })
 </script>
 <template>
   <div class="image-gallery">
@@ -59,8 +99,8 @@ onBeforeUnmount(() => { open.value = false; trigger.value = null })
       <template #content>
         <div class="lightbox" @keydown="onKey">
           <div class="lightbox-top"><div><span class="eyebrow">{{ title }}</span><span class="lightbox-counter" aria-live="polite" aria-atomic="true">{{ selected + 1 }} / {{ images.length }}</span></div><UButton color="neutral" variant="ghost" aria-label="Close photograph" class="lightbox-button" @click="open = false"><IconX :size="25" stroke="1.5" /></UButton></div>
-          <div class="lightbox-stage" @touchstart.passive="onTouchStart" @touchend="onTouchEnd" @touchcancel="touchStart = null"><div :key="current" class="lightbox-frame"><img v-if="!failed" :src="current" :alt="`${title} — photograph ${selected + 1}`" :style="{ aspectRatio: getPhotoAspectRatio(current) }" decoding="async" @error="onImageError"><div v-else class="lightbox-error"><h2>Photograph unavailable</h2><p>Try another photograph or open the original.</p></div></div></div>
-          <div class="lightbox-bottom"><UButton color="neutral" variant="ghost" aria-label="Previous photograph" class="lightbox-button" :disabled="images.length < 2" @click="move(-1)"><IconChevronLeft :size="23" stroke="1.5" /><span>Previous</span></UButton><a :href="current" target="_blank" rel="noopener noreferrer" class="text-link">Open original<IconArrowUpRight :size="16" /></a><UButton color="neutral" variant="ghost" aria-label="Next photograph" class="lightbox-button" :disabled="images.length < 2" @click="move(1)"><span>Next</span><IconChevronRight :size="23" stroke="1.5" /></UButton></div>
+          <div class="lightbox-stage" @touchstart.passive="onTouchStart" @touchend="onTouchEnd" @touchcancel="touchStart = null"><div :key="`${selected}-${current}`" class="lightbox-frame"><img v-if="!failed" ref="lightboxImage" :src="current" :alt="`${title} — photograph ${selected + 1}`" :style="{ aspectRatio: getPhotoAspectRatio(current) }" decoding="async" @load="onImageLoad" @error="onImageError"><div v-else class="lightbox-error"><h2>Photograph unavailable</h2><p>Try another photograph or open the original.</p></div></div></div>
+          <div class="lightbox-bottom"><UButton color="neutral" variant="ghost" aria-label="Previous photograph" class="lightbox-button" :disabled="images.length < 2" @click="move(-1, $event.detail > 0)"><IconChevronLeft :size="23" stroke="1.5" /><span>Previous</span></UButton><a :href="current" target="_blank" rel="noopener noreferrer" class="text-link">Open original<IconArrowUpRight :size="16" /></a><UButton color="neutral" variant="ghost" aria-label="Next photograph" class="lightbox-button" :disabled="images.length < 2" @click="move(1, $event.detail > 0)"><span>Next</span><IconChevronRight :size="23" stroke="1.5" /></UButton></div>
         </div>
       </template>
     </UModal>

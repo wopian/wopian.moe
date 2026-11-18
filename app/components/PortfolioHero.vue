@@ -10,6 +10,34 @@ const currentAlbum = computed(() => props.albums.find(album => album.path === cu
 const locationLines = computed(() => chekiLocationLines(currentAlbum.value?.location))
 const dateLines = computed(() => currentAlbum.value ? chekiDateLines(currentAlbum.value.date) : [])
 const wordmark = ref<HTMLElement | null>(null)
+const spread = ref<HTMLElement | null>(null)
+let printAnimations: Animation[] = []
+let selectionVersion = 0
+
+function cancelPrintAnimations() {
+  selectionVersion++
+  for (const animation of printAnimations) animation.cancel()
+  printAnimations = []
+}
+
+async function selectGenre(index: number, event: MouseEvent) {
+  if (index === selected.value) return
+  cancelPrintAnimations()
+  selected.value = index
+  if (event.detail === 0) return
+
+  const version = selectionVersion
+  await nextTick()
+  if (version !== selectionVersion || !spread.value) return
+
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches
+  const easing = getComputedStyle(spread.value).getPropertyValue('--ease-out').trim()
+  const frames = reduced
+    ? [{ opacity: 0.96 }, { opacity: 1 }]
+    : [{ opacity: 0.82, translate: '0 4px' }, { opacity: 1, translate: '0 0' }]
+  printAnimations = Array.from(spread.value.querySelectorAll('.hero-main-print, .hero-small-print'),
+    print => print.animate(frames, { duration: reduced ? 80 : 180, easing }))
+}
 const mastheadVisible = useState('homepage-masthead-visible', () => true)
 let observer: IntersectionObserver | undefined
 let resizeObserver: ResizeObserver | undefined
@@ -33,6 +61,7 @@ onMounted(() => {
   }
 })
 onBeforeUnmount(() => {
+  cancelPrintAnimations()
   observer?.disconnect()
   resizeObserver?.disconnect()
   mastheadVisible.value = true
@@ -42,7 +71,7 @@ onBeforeUnmount(() => {
 <template>
   <section class="portfolio-hero page-shell" aria-labelledby="hero-title">
     <h1 id="hero-title" ref="wordmark" class="hero-wordmark">WOPIAN<span class="heading-dot" aria-hidden="true">.</span></h1>
-    <div class="hero-spread">
+    <div ref="spread" class="hero-spread">
       <NuxtLink :to="trailingPath(current.albumPath)" class="hero-main-print" :style="{ '--print-rotation': photoRotation(current.photoUrl) }" :aria-label="`View ${current.title} album`">
         <PortfolioImage :src="current.photoUrl" :alt="`${current.title} — selected photograph`" :position="current.focalPosition" eager />
         <ChekiCaption class="hero-print-title" :lines="[current.title]" aria-live="polite" aria-atomic="true" />
@@ -50,7 +79,7 @@ onBeforeUnmount(() => {
       <div class="hero-side-group">
         <div class="hero-index">
           <div class="genre-controls" role="group" aria-label="Select featured photography genre">
-            <button v-for="(showcase, index) in showcases" :key="showcase.genre" type="button" :aria-pressed="selected === index" @click="selected = index">{{ showcase.label }}</button>
+            <button v-for="(showcase, index) in showcases" :key="showcase.genre" type="button" :aria-pressed="selected === index" @click="selectGenre(index, $event)">{{ showcase.label }}</button>
           </div>
         </div>
         <div class="hero-side">
