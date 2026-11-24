@@ -20,9 +20,9 @@
     "nuxt": "^4.6.4",
     "thumbhash": "^0.1.1"
   },
-  "packageManager": "bun@1.4.4",
+  "packageManager": "bun@1.4.5",
   "engines": {
-    "bun": "1.4.4"
+    "bun": "1.4.5"
   },
   "devDependencies": {
     "@carboneio/image-size": "^3.0.1",
